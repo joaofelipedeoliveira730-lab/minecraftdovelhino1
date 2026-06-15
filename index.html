@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="pt-PT" class="scroll-smooth h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bom Velhinho - Minecraft Premium Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: {
+                            DEFAULT: '#090A0F',
+                            light: '#12141C',
+                            lighter: '#1A1D29',
+                            border: '#2A2E3D',
+                        },
+                        mcEmerald: {
+                            DEFAULT: '#10B981',
+                            glow: '#059669',
+                            light: '#34D399'
+                        },
+                        mcGold: {
+                            DEFAULT: '#F59E0B',
+                            glow: '#D97706'
+                        }
+                    },
+                    fontFamily: {
+                        pixel: ['"Press Start 2P"', 'monospace'],
+                        sans: ['"Plus Jakarta Sans"', '"Outfit"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #090A0F;
+            color: #F3F4F6;
+        }
+        
+        /* Premium Obsidian Glassmorphism */
+        .glass-panel {
+            background: rgba(18, 20, 28, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel-hover:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Glowing texts & buttons */
+        .glow-emerald {
+            text-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+        }
+        .glow-gold {
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+        }
+
+        /* Neon Border Flow animation */
+        .neon-glow-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .neon-glow-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        .neon-glow-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090A0F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1A1D29;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10B981;
+        }
+
+        /* Custom Clicker mining anim */
+        @keyframes clickPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        .click-active {
+            animation: clickPulse 0.1s ease-out;
+        }
+
+        /* Float elements */
+        .float-anim {
+            animation: floatY 4s ease-in-out infinite;
+        }
+        @keyframes floatY {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Particle explosion */
+        .game-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: explodeParticles 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            font-weight: 800;
+        }
+        @keyframes explodeParticles {
+            0% { opacity: 1; transform: translate(0, 0) scale(1.2); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.5); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Top Loading Indicator / Dynamic Status -->
+    <div id="global-loader" class="h-1 w-full bg-gradient-to-r from-mcEmerald via-mcGold to-mcEmerald animate-pulse fixed top-0 left-0 z-50"></div>
+
+    <!-- Background Decoration Grid -->
+    <div class="fixed inset-0 pointer-events-none opacity-[0.02] z-0" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+    <!-- Elegant Global Alert Toast System (No browser alerts) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3 max-w-sm pointer-events-none"></div>
+
+    <!-- Custom Navigation Bar -->
+    <header class="bg-obsidian/90 border-b border-obsidian-border/80 backdrop-blur-md py-4 px-6 sticky top-0 z-40 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-mcEmerald to-emerald-800 flex items-center justify-center border border-mcEmerald/30 shadow-lg shadow-mcEmerald/10 group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-cubes text-white text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-pixel text-xs text-mcEmerald tracking-widest glow-emerald">BOM VELHINHO</span>
+                    <span class="text-[10px] text-zinc-400 font-semibold tracking-wider">Aventura Minecraft Premium</span>
+                </div>
+            </a>
+            
+            <nav class="flex flex-wrap justify-center gap-2 md:gap-4 text-xs font-semibold">
+                <a href="#como-entrar" class="hover:text-mcEmerald text-zinc-300 hover:bg-zinc-800/40 px-3 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-zinc-400"></i> Guia de Entrada
+                </a>
+                <a href="#dados-conexao" class="hover:text-mcEmerald text-zinc-300 hover:bg-zinc-800/40 px-3 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-server text-zinc-400"></i> Servidor IP
+                </a>
+                <a href="#mini-games" class="hover:text-mcEmerald text-zinc-300 hover:bg-zinc-800/40 px-3 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <span class="relative">
+                        <i class="fa-solid fa-gamepad text-zinc-400"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-mcGold rounded-full animate-ping"></span>
+                    </span> Mini-Games
+                </a>
+                <a href="#lobby-multiplayer" class="hover:text-mcEmerald text-zinc-300 hover:bg-zinc-800/40 px-3 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-users text-zinc-400"></i> Equipa Online
+                </a>
+                <a href="#quiz" class="hover:text-mcEmerald text-zinc-300 hover:bg-zinc-800/40 px-3 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-scroll text-zinc-400"></i> Quiz
+                </a>
+            </nav>
+
+            <!-- User Auth Profile Widget -->
+            <div id="user-profile-badge" class="flex items-center gap-3 bg-obsidian-light border border-obsidian-border py-1.5 px-3 rounded-full">
+                <!-- Swapped dynamically -->
+                <div class="w-6 h-6 rounded-full bg-zinc-700 flex items-center justify-center text-[10px]" id="avatar-preview-nav">👨‍🚀</div>
+                <span id="username-display-nav" class="text-xs font-semibold text-zinc-300">Convidado</span>
+                <button onclick="openLoginModal()" class="text-xs text-mcEmerald hover:text-mcEmerald-light font-bold focus:outline-none transition-colors">
+                    <i class="fa-solid fa-user-gear"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow z-10">
+
+        <!-- Elegant Hero Section -->
+        <section id="hero" class="relative min-h-[60vh] flex items-center justify-center py-20 px-6 border-b border-obsidian-border overflow-hidden">
+            <!-- Glowing background gradient blobs -->
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-mcEmerald/5 filter blur-[100px] pointer-events-none"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-mcGold/5 filter blur-[100px] pointer-events-none"></div>
+
+            <div class="max-w-5xl mx-auto text-center relative z-10">
+                <div class="mb-4 inline-flex items-center gap-2 bg-mcEmerald/10 text-mcEmerald border border-mcEmerald/30 rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-widest">
+                    <i class="fa-solid fa-star text-[10px] animate-spin"></i> Servidor Bedrock Oficial
+                </div>
+
+                <h1 class="text-4xl md:text-7xl font-extrabold tracking-tight text-white mb-6">
+                    Mergulha no <br>
+                    <span class="bg-gradient-to-r from-mcEmerald via-mcEmerald-light to-mcGold bg-clip-text text-transparent font-pixel text-2xl md:text-5xl tracking-widest block mt-4 drop-shadow-md">
+                        BOM VELHINHO
+                    </span>
+                </h1>
+
+                <p class="max-w-2xl mx-auto text-zinc-400 text-sm md:text-lg mb-10 leading-relaxed font-normal">
+                    Conecta-te ao nosso servidor Aternos dedicado com os teus amigos, compete nos novos mini-jogos exclusivos online com lobbies partilhados e conquista o topo da equipa!
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#dados-conexao" class="neon-glow-btn bg-mcEmerald text-obsidian font-extrabold text-sm py-4 px-8 rounded-xl shadow-lg shadow-mcEmerald/10 hover:shadow-mcEmerald/30 hover:scale-[1.02] flex items-center gap-3">
+                        <i class="fa-solid fa-plug text-base"></i> ENTRAR NO SERVIDOR
+                    </a>
+                    <a href="#mini-games" class="glass-panel text-white hover:bg-obsidian-lighter hover:border-mcEmerald/40 font-bold text-sm py-4 px-8 rounded-xl border border-obsidian-border transition-all flex items-center gap-3">
+                        <i class="fa-solid fa-gamepad text-mcEmerald"></i> JOGAR MINI-GAMES
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Multi-player Lobby Coordination (Firebase Powered) -->
+        <section id="lobby-multiplayer" class="bg-obsidian-light py-20 px-6 border-b border-obsidian-border">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <span class="text-mcGold text-xs font-extrabold tracking-widest uppercase"><i class="fa-solid fa-circle-nodes mr-1 animate-pulse"></i> Liga-te e Compete Juntos</span>
+                    <h2 class="text-3xl font-extrabold text-white mt-2">Lobbies Multi-Jogador de Equipa</h2>
+                    <p class="text-zinc-400 text-sm mt-2 max-w-lg mx-auto">Cria ou junta-te a uma sala com o código de equipa. Todos na sala competem nos mesmos rankings em tempo real!</p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Lobby Panel (Action Screen) -->
+                    <div class="glass-panel p-6 rounded-2xl border border-obsidian-border flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-10 h-10 rounded-lg bg-mcGold/10 flex items-center justify-center text-mcGold">
+                                    <i class="fa-solid fa-network-wired text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">O Teu Lobby</h4>
+                                    <p class="text-zinc-500 text-[11px]">Gerir ligação de equipa</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-zinc-400 text-xs font-semibold mb-2">CÓDIGO DE EQUIPA ATIVO</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="lobby-code-input" class="bg-obsidian w-full px-4 py-3 rounded-xl border border-obsidian-border text-white text-center font-pixel tracking-widest text-sm focus:outline-none focus:border-mcEmerald focus:ring-1 focus:ring-mcEmerald" placeholder="EX: A7X9">
+                                        <button onclick="joinLobbyByCode()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white px-4 rounded-xl text-xs font-bold transition-all flex items-center gap-1">
+                                            Entrar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between gap-4 py-2">
+                                    <div class="h-px bg-obsidian-border flex-grow"></div>
+                                    <span class="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Ou cria um novo</span>
+                                    <div class="h-px bg-obsidian-border flex-grow"></div>
+                                </div>
+
+                                <button onclick="createNewLobby()" class="w-full bg-mcEmerald/10 hover:bg-mcEmerald/20 text-mcEmerald border border-mcEmerald/30 py-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-plus"></i> GERAR NOVO CÓDIGO
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-4 border-t border-obsidian-border/55">
+                            <div class="flex items-center justify-between text-xs text-zinc-500">
+                                <span>Status de Conexão:</span>
+                                <span class="flex items-center gap-1.5 font-bold text-mcEmerald" id="firebase-status">
+                                    <span class="w-2.5 h-2.5 bg-mcEmerald rounded-full animate-ping"></span> Prontos
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lobby Members List -->
+                    <div class="lg:col-span-2 glass-panel p-6 rounded-2xl border border-obsidian-border">
+                        <div class="flex items-center justify-between mb-6 border-b border-obsidian-border/60 pb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-zinc-300 text-sm">Jogadores no Teu Lobby:</span>
+                                <span class="bg-mcEmerald/20 text-mcEmerald text-[11px] font-extrabold px-2 py-0.5 rounded-full" id="room-code-tag">Nenhum</span>
+                            </div>
+                            <button onclick="refreshActiveLobby()" class="text-zinc-500 hover:text-zinc-300 text-xs transition-colors">
+                                <i class="fa-solid fa-rotate mr-1"></i> Atualizar
+                            </button>
+                        </div>
+
+                        <!-- Active Teammates -->
+                        <div class="space-y-3 max-h-[250px] overflow-y-auto pr-2" id="lobby-members-list">
+                            <!-- Populated dynamically via JS -->
+                            <div class="flex items-center justify-center py-8 text-zinc-500 text-xs text-center">
+                                <p><i class="fa-solid fa-users-slash text-xl mb-2 block text-zinc-600"></i>Não estás associado a nenhuma equipa.<br>Gera um código ou entra numa sala acima para jogarem juntos!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guide Section Redesigned (Como Entrar) -->
+        <section id="como-entrar" class="py-20 px-6 border-b border-obsidian-border relative">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="text-mcEmerald text-xs font-extrabold tracking-widest uppercase">CONEXÃO FÁCIL</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-2">Como Entrar No Servidor</h2>
+                    <p class="text-zinc-400 text-sm mt-3 max-w-xl mx-auto">Entrar no nosso servidor é muito simples. Segue estes três passos rápidos para estares no jogo em menos de dois minutos.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="glass-panel glass-panel-hover p-8 rounded-2xl border border-obsidian-border flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-mcEmerald/10 text-mcEmerald flex items-center justify-center mb-6 font-pixel text-lg">01</div>
+                            <h4 class="text-lg font-bold text-white mb-3">Iniciar Versão Bedrock</h4>
+                            <p class="text-zinc-400 text-sm leading-relaxed">
+                                Abre o teu Minecraft e garante que estás a usar a versão compatível (<strong class="text-mcGold">BEDROCK</strong>). O nosso servidor foi concebido para suportar ligações directas móveis, consola ou PC.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-obsidian-border/50 text-[11px] text-zinc-500 flex items-center gap-2">
+                            <i class="fa-solid fa-info-circle text-mcEmerald"></i> Recomendado: 1.26.2.1
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="glass-panel glass-panel-hover p-8 rounded-2xl border border-obsidian-border flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-mcEmerald/10 text-mcEmerald flex items-center justify-center mb-6 font-pixel text-lg">02</div>
+                            <h4 class="text-lg font-bold text-white mb-3">Adicionar Servidor Externo</h4>
+                            <p class="text-zinc-400 text-sm leading-relaxed">
+                                Navega até ao separador <strong class="text-white">Jogar</strong> &gt; <strong class="text-white">Servidores</strong>. Desce até ao fim da lista e clica na opção <strong class="text-mcEmerald">Adicionar Servidor</strong>.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-obsidian-border/50 text-[11px] text-zinc-500 flex items-center gap-2">
+                            <i class="fa-solid fa-info-circle text-mcEmerald"></i> Não requer subscrições adicionais.
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="glass-panel glass-panel-hover p-8 rounded-2xl border border-obsidian-border flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-mcEmerald/10 text-mcEmerald flex items-center justify-center mb-6 font-pixel text-lg">03</div>
+                            <h4 class="text-lg font-bold text-white mb-3">Preencher Dados e Conectar</h4>
+                            <p class="text-zinc-400 text-sm leading-relaxed">
+                                Introduz o endereço de IP e a respetiva Porta indicados no painel abaixo. Clica em <strong class="text-white">Guardar</strong> ou clica em <strong class="text-mcEmerald">Jogar</strong> para iniciar a aventura imediatamente!
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-obsidian-border/50 text-[11px] text-zinc-500 flex items-center gap-2">
+                            <i class="fa-solid fa-info-circle text-mcEmerald"></i> Verifica se o Aternos está online!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Redesigned Server Address Panel -->
+        <section id="dados-conexao" class="py-20 px-6 bg-obsidian-light/60 border-b border-obsidian-border">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="mb-4 inline-flex items-center gap-1.5 bg-mcGold/10 text-mcGold border border-mcGold/30 rounded-full px-3 py-1 text-xs font-bold uppercase">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Conexão Direta
+                </div>
+                <h2 class="text-3xl font-extrabold text-white">Dados de Ligação do Servidor</h2>
+                <p class="text-zinc-400 text-sm mt-2 max-w-lg mx-auto">Copia as informações abaixo e cola-as nas definições de conexão externa do teu jogo.</p>
+
+                <div class="mt-12 glass-panel p-8 rounded-2xl border border-obsidian-border max-w-2xl mx-auto relative overflow-hidden">
+                    <!-- Elegant dynamic shine -->
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-mcEmerald/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="space-y-6 text-left">
+                        <!-- Server IP -->
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-obsidian/80 rounded-xl border border-obsidian-border hover:border-mcEmerald/30 transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400 text-base">
+                                    <i class="fa-solid fa-globe"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] text-mcEmerald font-bold tracking-widest block uppercase">Endereço IP / Host</span>
+                                    <span class="font-mono text-base md:text-lg text-white font-semibold">OsNOIAS.aternos.me</span>
+                                </div>
+                            </div>
+                            <button onclick="copyToClipboard('OsNOIAS.aternos.me', 'ip-btn-cpy')" id="ip-btn-cpy" class="bg-mcEmerald hover:bg-mcEmerald-light text-obsidian font-extrabold text-xs py-3 px-5 rounded-lg flex items-center justify-center gap-2 shadow-md shadow-mcEmerald/10 transition-all self-end sm:self-auto">
+                                <i class="fa-solid fa-copy"></i> COPIAR IP
+                            </button>
+                        </div>
+
+                        <!-- Port -->
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-obsidian/80 rounded-xl border border-obsidian-border hover:border-mcEmerald/30 transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400 text-base">
+                                    <i class="fa-solid fa-hashtag"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] text-mcEmerald font-bold tracking-widest block uppercase">Porta Bedrock</span>
+                                    <span class="font-mono text-base md:text-lg text-white font-semibold">39551</span>
+                                </div>
+                            </div>
+                            <button onclick="copyToClipboard('39551', 'port-btn-cpy')" id="port-btn-cpy" class="bg-mcEmerald hover:bg-mcEmerald-light text-obsidian font-extrabold text-xs py-3 px-5 rounded-lg flex items-center justify-center gap-2 shadow-md shadow-mcEmerald/10 transition-all self-end sm:self-auto">
+                                <i class="fa-solid fa-copy"></i> COPIAR PORTA
+                            </button>
+                        </div>
+
+                        <!-- System Version Info -->
+                        <div class="flex items-center justify-between p-4 bg-obsidian/80 rounded-xl border border-obsidian-border">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center text-mcGold text-base">
+                                    <i class="fa-solid fa-code-branch"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] text-zinc-500 font-bold tracking-widest block uppercase">Plataforma e Versão</span>
+                                    <span class="text-sm font-semibold text-zinc-300">Minecraft Bedrock 1.26.2.1</span>
+                                </div>
+                            </div>
+                            <span class="bg-mcGold/10 border border-mcGold/30 text-mcGold px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">Aternos Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Arcade Section (New Games and Experiences) -->
+        <section id="mini-games" class="py-20 px-6 border-b border-obsidian-border relative">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="text-mcEmerald text-xs font-extrabold tracking-widest uppercase"><i class="fa-solid fa-gamepad mr-1 animate-bounce"></i> ARCADE BOM VELHINHO</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-2">Mini-Games Oficiais</h2>
+                    <p class="text-zinc-400 text-sm mt-3 max-w-xl mx-auto">Diverte-te diretamente no navegador enquanto esperas que o teu servidor ligue. As tuas pontuações são guardadas e partilhadas no teu lobby!</p>
+                </div>
+
+                <!-- Tabs header to swap game modes -->
+                <div class="flex flex-wrap justify-center gap-3 mb-12">
+                    <button onclick="switchGameMode('clicker')" id="tab-clicker" class="px-5 py-3 rounded-xl text-xs font-bold transition-all border border-mcEmerald bg-mcEmerald/10 text-mcEmerald flex items-center gap-2">
+                        <i class="fa-solid fa-gem"></i> Netheite Miner Clicker
+                    </button>
+                    <button onclick="switchGameMode('runner')" id="tab-runner" class="px-5 py-3 rounded-xl text-xs font-bold transition-all border border-obsidian-border text-zinc-400 hover:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-motorcycle"></i> Kart Bros: Pixel Dash
+                    </button>
+                </div>
+
+                <!-- Game Container Panels -->
+                <div id="game-stage-container" class="max-w-4xl mx-auto">
+
+                    <!-- Mini-Game 1: Netherite Clicker -->
+                    <div id="game-clicker" class="glass-panel p-6 md:p-8 rounded-3xl border border-obsidian-border">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <!-- Clicker Interaction Area -->
+                            <div class="flex flex-col items-center justify-center p-6 bg-obsidian/60 border border-obsidian-border rounded-2xl relative overflow-hidden h-[380px]">
+                                <!-- Click Score Header -->
+                                <div class="text-center z-10 mb-6">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-widest font-bold">Minérios Extraídos</p>
+                                    <div class="flex items-center gap-2 justify-center mt-1">
+                                        <i class="fa-solid fa-cubes text-mcEmerald"></i>
+                                        <span id="clicker-score" class="font-pixel text-2xl text-white glow-emerald">0</span>
+                                    </div>
+                                    <p class="text-[10px] text-zinc-400 mt-1" id="cps-display">0 M/s auto-produção</p>
+                                </div>
+
+                                <!-- Mineral Target to click -->
+                                <div class="relative w-40 h-40 cursor-pointer flex items-center justify-center z-10 group" id="mine-target" onclick="triggerMineClick(event)">
+                                    <div class="absolute inset-0 bg-mcEmerald/10 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-300"></div>
+                                    
+                                    <!-- Dynamic Mineral Render SVG -->
+                                    <svg viewBox="0 0 100 100" class="w-28 h-28 drop-shadow-2xl transition-all float-anim duration-100 transform select-none" id="clicker-stone-svg">
+                                        <!-- Isometric Netherite / Diamond hybrid Block -->
+                                        <polygon points="50,15 85,35 50,55 15,35" fill="#2d303a" />
+                                        <polygon points="15,35 50,55 50,85 15,65" fill="#1f2129" />
+                                        <polygon points="50,55 85,35 85,65 50,85" fill="#13141a" />
+                                        <!-- Diamond veins glow -->
+                                        <polygon points="40,30 55,27 45,35" fill="#10B981" />
+                                        <polygon points="65,40 78,35 70,45" fill="#10B981" />
+                                        <polygon points="25,45 35,50 30,55" fill="#10B981" />
+                                        <polygon points="60,65 75,60 65,70" fill="#10B981" />
+                                    </svg>
+                                </div>
+
+                                <p class="text-[10px] text-zinc-500 mt-8 z-10 uppercase tracking-wider font-semibold"><i class="fa-solid fa-hand-pointer animate-pulse mr-1"></i> Clica no bloco de minério!</p>
+                            </div>
+
+                            <!-- Clicker Upgrades Panel -->
+                            <div class="space-y-4">
+                                <h4 class="text-sm font-extrabold uppercase text-mcGold tracking-widest"><i class="fa-solid fa-screwdriver-wrench"></i> Upgrades & Ferramentas</h4>
+                                <p class="text-zinc-400 text-xs">Gasta os teus minérios extraídos para automatizar ou melhorar o poder da tua mineração.</p>
+                                
+                                <div class="space-y-3">
+                                    <!-- Upgrade 1: Wooden Pickaxe -->
+                                    <button onclick="buyClickerUpgrade('wood_pick')" class="w-full flex items-center justify-between p-3 bg-obsidian/40 hover:bg-obsidian border border-obsidian-border hover:border-mcEmerald/30 rounded-xl transition-all text-left group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400">
+                                                <i class="fa-solid fa-hammer"></i>
+                                            </div>
+                                            <div>
+                                                <span class="text-xs font-bold text-white block">Picareta de Madeira</span>
+                                                <span class="text-[10px] text-zinc-500 block">+1 por Clique</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="bg-mcEmerald/10 text-mcEmerald border border-mcEmerald/30 text-[10px] font-bold px-2 py-1 rounded" id="cost-wood_pick">15 Minérios</span>
+                                        </div>
+                                    </button>
+
+                                    <!-- Upgrade 2: Iron Pickaxe -->
+                                    <button onclick="buyClickerUpgrade('iron_pick')" class="w-full flex items-center justify-between p-3 bg-obsidian/40 hover:bg-obsidian border border-obsidian-border hover:border-mcEmerald/30 rounded-xl transition-all text-left group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400">
+                                                <i class="fa-solid fa-fill-drip"></i>
+                                            </div>
+                                            <div>
+                                                <span class="text-xs font-bold text-white block">Picareta de Ferro</span>
+                                                <span class="text-[10px] text-zinc-500 block">+5 por Clique</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="bg-mcEmerald/10 text-mcEmerald border border-mcEmerald/30 text-[10px] font-bold px-2 py-1 rounded" id="cost-iron_pick">100 Minérios</span>
+                                        </div>
+                                    </button>
+
+                                    <!-- Upgrade 3: Redstone Miner -->
+                                    <button onclick="buyClickerUpgrade('redstone_miner')" class="w-full flex items-center justify-between p-3 bg-obsidian/40 hover:bg-obsidian border border-obsidian-border hover:border-mcEmerald/30 rounded-xl transition-all text-left group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center text-red-500">
+                                                <i class="fa-solid fa-gears"></i>
+                                            </div>
+                                            <div>
+                                                <span class="text-xs font-bold text-white block">Minerador Redstone Automático</span>
+                                                <span class="text-[10px] text-zinc-500 block">+1 Auto-Minério/segundo</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="bg-mcEmerald/10 text-mcEmerald border border-mcEmerald/30 text-[10px] font-bold px-2 py-1 rounded" id="cost-redstone_miner">250 Minérios</span>
+                                        </div>
+                                    </button>
+
+                                    <!-- Upgrade 4: Netherite Drilling -->
+                                    <button onclick="buyClickerUpgrade('netherite_drill')" class="w-full flex items-center justify-between p-3 bg-obsidian/40 hover:bg-obsidian border border-obsidian-border hover:border-mcEmerald/30 rounded-xl transition-all text-left group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center text-purple-400">
+                                                <i class="fa-solid fa-bore-hole"></i>
+                                            </div>
+                                            <div>
+                                                <span class="text-xs font-bold text-white block">Broca de Netherite</span>
+                                                <span class="text-[10px] text-zinc-500 block">+10 Auto-Minério/segundo</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="bg-mcEmerald/10 text-mcEmerald border border-mcEmerald/30 text-[10px] font-bold px-2 py-1 rounded" id="cost-netherite_drill">1000 Minérios</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini-Game 2: Kart Bros Dodge Runner -->
+                    <div id="game-runner" class="glass-panel p-6 rounded-3xl border border-obsidian-border hidden">
+                        <div class="text-center mb-6">
+                            <h4 class="text-sm font-extrabold uppercase text-mcGold tracking-widest flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-motorcycle animate-pulse"></i> Kart Bros: Mine Dash
+                            </h4>
+                            <p class="text-zinc-400 text-xs mt-1">Usa o botão de salto ou a tecla [Espaço/Seta Cima] para desviares das barreiras, TNT e Creeper!</p>
+                        </div>
+
+                        <!-- Canvas Stage Section -->
+                        <div class="relative overflow-hidden rounded-xl border border-obsidian-border bg-black/90 aspect-[16/9] w-full" id="canvas-container">
+                            <canvas id="runner-canvas" class="w-full h-full block bg-zinc-950"></canvas>
+                            
+                            <!-- Game Over / Play overlay -->
+                            <div id="runner-overlay" class="absolute inset-0 bg-black/85 flex flex-col items-center justify-center p-6 text-center z-10 transition-all duration-300">
+                                <span class="bg-mcEmerald/15 text-mcEmerald text-[10px] font-extrabold border border-mcEmerald/30 px-3 py-1 rounded-full uppercase tracking-wider mb-2">Desvia-te e Sobrevive</span>
+                                <h3 id="runner-overlay-title" class="text-2xl md:text-3xl font-extrabold text-white mb-2">KART BROS</h3>
+                                <p id="runner-overlay-desc" class="text-zinc-400 text-xs max-w-sm mb-6">Ajuda o teu personagem a esquivar-se dos obstáculos no inferno do Nether!</p>
+                                
+                                <button onclick="startRunnerGame()" class="neon-glow-btn bg-mcEmerald text-obsidian font-extrabold text-xs py-3 px-8 rounded-xl shadow-lg transition-transform hover:scale-105">
+                                    <i class="fa-solid fa-play mr-1"></i> COMEÇAR JOGO
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Mobile controls -->
+                        <div class="flex items-center justify-between gap-4 mt-6">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-zinc-500 font-semibold">Pontos: <span id="runner-score-live" class="text-white font-mono font-bold">0</span></span>
+                                <span class="text-xs text-zinc-500 font-semibold">Recorde: <span id="runner-high-live" class="text-mcGold font-mono font-bold">0</span></span>
+                            </div>
+                            <!-- Huge tap target for mobile -->
+                            <button id="mobile-jump-btn" class="bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-white py-4 px-10 rounded-xl text-xs font-bold select-none border border-zinc-700" style="touch-action: manipulation;">
+                                <i class="fa-solid fa-arrow-up mr-2"></i> SALTAR (TOUCH)
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Redesigned Mini Quiz -->
+        <section id="quiz" class="py-20 px-6 bg-obsidian-light/40">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-12">
+                    <span class="text-mcGold text-xs font-extrabold tracking-widest uppercase">CONHECIMENTO GERAL</span>
+                    <h2 class="text-3xl font-extrabold text-white mt-2">Quiz de Sobrevivência Minecraft</h2>
+                    <p class="text-zinc-400 text-sm mt-2">Testa os teus conhecimentos e prova que és um mestre veterano.</p>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl border border-obsidian-border" id="quiz-block">
+                    <!-- Dynamic Quiz Core -->
+                    <div id="quiz-stage">
+                        <div class="flex items-center justify-between text-xs text-zinc-500 mb-6">
+                            <span>Questão <span id="quiz-curr" class="text-white font-bold">1</span> de <span id="quiz-total" class="text-white">5</span></span>
+                            <span class="bg-zinc-800 px-2 py-1 rounded" id="quiz-category">Sobrevivência</span>
+                        </div>
+
+                        <h3 class="text-base md:text-lg font-bold text-white mb-6" id="quiz-question-txt">A carregar pergunta...</h3>
+
+                        <div class="space-y-3" id="quiz-options-box">
+                            <!-- Dynamic answers populated via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Login / Avatar Select -->
+    <div id="login-modal" class="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-panel w-full max-w-md rounded-3xl border border-obsidian-border p-6 md:p-8 relative">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-zinc-300 transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <h3 class="text-xl font-extrabold text-white mb-2">Painel do Jogador</h3>
+            <p class="text-zinc-400 text-xs mb-6">Escolhe o teu nickname de jogo e o teu avatar preferido!</p>
+
+            <div class="space-y-6">
+                <!-- Nickname Input -->
+                <div>
+                    <label class="block text-zinc-400 text-xs font-semibold mb-2">COMO TE CHAMAS NO JOGO?</label>
+                    <input type="text" id="nickname-input" class="bg-obsidian w-full px-4 py-3 rounded-xl border border-obsidian-border text-white text-sm focus:outline-none focus:border-mcEmerald focus:ring-1 focus:ring-mcEmerald" placeholder="EX: MineradorBrabo">
+                </div>
+
+                <!-- Avatar Selection Grid -->
+                <div>
+                    <label class="block text-zinc-400 text-xs font-semibold mb-3">SELECIONA O TEU AVATAR</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <!-- Avatar 1 -->
+                        <button onclick="selectAvatarOption(0)" class="avatar-opt-btn flex flex-col items-center p-3 bg-obsidian rounded-xl border border-mcEmerald hover:border-mcEmerald transition-all" data-index="0">
+                            <span class="text-2xl mb-1">👨‍🚀</span>
+                            <span class="text-[10px] text-zinc-400 font-bold">Steve</span>
+                        </button>
+                        <!-- Avatar 2 -->
+                        <button onclick="selectAvatarOption(1)" class="avatar-opt-btn flex flex-col items-center p-3 bg-obsidian rounded-xl border border-obsidian-border hover:border-mcEmerald transition-all" data-index="1">
+                            <span class="text-2xl mb-1">👩‍🚀</span>
+                            <span class="text-[10px] text-zinc-400 font-bold">Alex</span>
+                        </button>
+                        <!-- Avatar 3 -->
+                        <button onclick="selectAvatarOption(2)" class="avatar-opt-btn flex flex-col items-center p-3 bg-obsidian rounded-xl border border-obsidian-border hover:border-mcEmerald transition-all" data-index="2">
+                            <span class="text-2xl mb-1">🧟</span>
+                            <span class="text-[10px] text-zinc-400 font-bold">Zombi</span>
+                        </button>
+                        <!-- Avatar 4 -->
+                        <button onclick="selectAvatarOption(3)" class="avatar-opt-btn flex flex-col items-center p-3 bg-obsidian rounded-xl border border-obsidian-border hover:border-mcEmerald transition-all" data-index="3">
+                            <span class="text-2xl mb-1">🦴</span>
+                            <span class="text-[10px] text-zinc-400 font-bold">Esqueleto</span>
+                        </button>
+                        <!-- Avatar 5 -->
+                        <button onclick="selectAvatarOption(4)" class="avatar-opt-btn flex flex-col items-center p-3 bg-obsidian rounded-xl border border-obsidian-border hover:border-mcEmerald transition-all" data-index="4">
+                            <span class="text-2xl mb-1">🐷</span>
+                            <span class="text-[10px] text-zinc-400 font-bold">Pigman</span>
+                        </button>
+                        <!-- Avatar 6 -->
+                        <button onclick="selectAvatarOption(5)" class="avatar-opt-btn flex flex-col items-center p-3 bg-obsidian rounded-xl border border-obsidian-border hover:border-mcEmerald transition-all" data-index="5">
+                            <span class="text-2xl mb-1">🐙</span>
+                            <span class="text-[10px] text-zinc-400 font-bold">Ender</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="saveUserProfile()" class="w-full bg-mcEmerald hover:bg-mcEmerald-light text-obsidian font-extrabold py-3.5 rounded-xl text-sm shadow-lg shadow-mcEmerald/10 transition-all uppercase tracking-wider">
+                    Confirmar Dados
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Elegant Footer -->
+    <footer class="bg-obsidian py-12 px-6 border-t border-obsidian-border text-center">
+        <div class="max-w-7xl mx-auto flex flex-col items-center gap-6">
+            <span class="font-pixel text-xs text-zinc-600">BOM VELHINHO Minecraft Portal</span>
+            <p class="text-zinc-500 text-xs max-w-md">Não temos nenhuma afiliação oficial com a Mojang Studios, Microsoft ou Aternos. Minecraft é propriedade registada dos respetivos criadores.</p>
+            <div class="h-px w-20 bg-zinc-800"></div>
+            <p class="text-[10px] text-zinc-600">&copy; 2026 Bom Velhinho. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Complete Integrated Systems Logic (Aesthetics, Audio, Lobbies and Games) -->
+    <script>
+        // Sound Engine Context
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSynthSound(freq, duration, type = 'sine', volume = 0.1) {
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+                gain.gain.setValueAtTime(volume, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + duration);
+            } catch (e) {
+                console.log("Audio play suppressed by browser policy.", e);
+            }
+        }
+
+        // Play standard click sound
+        function playUiClick() {
+            playSynthSound(400, 0.08, 'triangle', 0.15);
+        }
+
+        // Dynamic system toast notifications
+        function showNotification(title, message, icon = 'fa-info-circle', style = 'emerald') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let accentColor = 'border-mcEmerald text-mcEmerald';
+            if (style === 'gold') accentColor = 'border-mcGold text-mcGold';
+            if (style === 'red') accentColor = 'border-red-500 text-red-500';
+
+            toast.className = `glass-panel pointer-events-auto flex items-start gap-3 p-4 rounded-xl border-l-4 ${accentColor} shadow-xl transform translate-y-2 opacity-0 transition-all duration-300`;
+            toast.innerHTML = `
+                <div class="text-base"><i class="fa-solid ${icon}"></i></div>
+                <div class="flex-grow">
+                    <span class="block text-xs font-bold text-white">${title}</span>
+                    <span class="block text-[11px] text-zinc-400 mt-0.5">${message}</span>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation frame delay
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Clear toast automatically
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Copy Clipboard Helper
+        function copyToClipboard(text, buttonId) {
+            playUiClick();
+            
+            // Backup selection copy logic
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            // Change button text dynamically to indicate success
+            const btn = document.getElementById(buttonId);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> COPIADO`;
+            btn.classList.add('bg-mcGold', 'text-obsidian');
+            btn.classList.remove('bg-mcEmerald');
+
+            showNotification("Copiado com sucesso!", `Texto "${text}" copiado para a área de transferência.`, 'fa-circle-check', 'emerald');
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('bg-mcGold', 'text-obsidian');
+                btn.classList.add('bg-mcEmerald');
+            }, 2500);
+        }
+
+        // --- LOCAL USER STATE AND STORAGE ---
+        const AVATAR_POOL = [
+            { emoji: '👨‍🚀', name: 'Steve' },
+            { emoji: '👩‍🚀', name: 'Alex' },
+            { emoji: '🧟', name: 'Zombi' },
+            { emoji: '🦴', name: 'Esqueleto' },
+            { emoji: '🐷', name: 'Pigman' },
+            { emoji: '🐙', name: 'Ender' }
+        ];
+
+        let activeUserProfile = {
+            id: '',
+            nickname: 'Minerador_Anonimo',
+            avatarIndex: 0,
+            clickerScore: 0,
+            runnerHighScore: 0
+        };
+
+        let currentActiveRoomCode = '';
+        let currentTeammates = [];
+
+        function loadUserProfileFromLocalStorage() {
+            const saved = localStorage.getItem('bom_velhinho_user');
+            if (saved) {
+                try {
+                    activeUserProfile = JSON.parse(saved);
+                } catch(e) {
+                    initDefaultUserProfile();
+                }
+            } else {
+                initDefaultUserProfile();
+            }
+            updateNavBarBadge();
+        }
+
+        function initDefaultUserProfile() {
+            activeUserProfile.id = 'user_' + Math.random().toString(36).substring(2, 9);
+            activeUserProfile.nickname = 'Player_' + Math.floor(1000 + Math.random() * 9000);
+            activeUserProfile.avatarIndex = Math.floor(Math.random() * AVATAR_POOL.length);
+            activeUserProfile.clickerScore = 0;
+            activeUserProfile.runnerHighScore = 0;
+            saveUserProfileToStorage();
+        }
+
+        function saveUserProfileToStorage() {
+            localStorage.setItem('bom_velhinho_user', JSON.stringify(activeUserProfile));
+        }
+
+        function updateNavBarBadge() {
+            const avatar = AVATAR_POOL[activeUserProfile.avatarIndex];
+            document.getElementById('avatar-preview-nav').textContent = avatar.emoji;
+            document.getElementById('username-display-nav').textContent = activeUserProfile.nickname;
+            
+            // Populate inputs
+            document.getElementById('nickname-input').value = activeUserProfile.nickname;
+            selectAvatarOption(activeUserProfile.avatarIndex);
+        }
+
+        // Login Panel & Custom Modals
+        function openLoginModal() {
+            playUiClick();
+            const modal = document.getElementById('login-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeLoginModal() {
+            playUiClick();
+            const modal = document.getElementById('login-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        let tempSelectedAvatarIndex = 0;
+        function selectAvatarOption(index) {
+            tempSelectedAvatarIndex = index;
+            const buttons = document.querySelectorAll('.avatar-opt-btn');
+            buttons.forEach(btn => {
+                const bIdx = parseInt(btn.getAttribute('data-index'));
+                if (bIdx === index) {
+                    btn.classList.add('border-mcEmerald', 'bg-mcEmerald/5');
+                    btn.classList.remove('border-obsidian-border');
+                } else {
+                    btn.classList.remove('border-mcEmerald', 'bg-mcEmerald/5');
+                    btn.classList.add('border-obsidian-border');
+                }
+            });
+        }
+
+        async function saveUserProfile() {
+            playSynthSound(440, 0.1, 'sine');
+            const input = document.getElementById('nickname-input').value.trim();
+            if (input) {
+                activeUserProfile.nickname = input;
+            }
+            activeUserProfile.avatarIndex = tempSelectedAvatarIndex;
+            saveUserProfileToStorage();
+            updateNavBarBadge();
+            closeLoginModal();
+            showNotification("Perfil Atualizado!", "As tuas informações locais foram gravadas.", "fa-user-check", "emerald");
+            
+            // Propagate updates to Firestore if currently in a lobby
+            if (currentActiveRoomCode) {
+                await updateLobbyPresenceInDatabase();
+            }
+        }
+
+
+        // --- FIRESTORE REALTIME MULTIPLAYER COMPONENT ---
+        let db = null;
+        let auth = null;
+        let appId = "bom-velhinho-portal";
+
+        // Global environment variables check (following rule guidelines)
+        const initializedFirebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'bom-velhinho-portal';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        async function initFirebaseMultiplayer() {
+            if (!initializedFirebaseConfig) {
+                console.log("Firestore unavailable: No credentials configured.");
+                document.getElementById('firebase-status').innerHTML = `<span class="w-2.5 h-2.5 bg-zinc-500 rounded-full"></span> Offline`;
+                return;
+            }
+
+            try {
+                const app = firebase.initializeApp(initializedFirebaseConfig);
+                auth = firebase.getAuth(app);
+                db = firebase.getFirestore(app);
+                appId = currentAppId;
+
+                // Auth Rule 3 Implementation
+                if (initialAuthToken) {
+                    await firebase.signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await firebase.signInAnonymously(auth);
+                }
+
+                firebase.onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        console.log("Firebase Auth success. Handshake complete.");
+                        document.getElementById('firebase-status').innerHTML = `<span class="w-2.5 h-2.5 bg-mcEmerald rounded-full animate-ping"></span> Real-time`;
+                    }
+                });
+
+            } catch (err) {
+                console.error("Firebase Initialization Error: ", err);
+                document.getElementById('firebase-status').innerHTML = `<span class="w-2.5 h-2.5 bg-red-500 rounded-full"></span> Falha`;
+            }
+        }
+
+        // Generate Team Code
+        function generateRoomCode(length = 4) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Active Listening on Lobby
+        let lobbyUnsubscribe = null;
+
+        async function createNewLobby() {
+            playUiClick();
+            if (!db) {
+                // Offline fallback simulation
+                const mockCode = generateRoomCode();
+                currentActiveRoomCode = mockCode;
+                showNotification("Aviso Offline", "Configurando Sala Local de Simulação.", "fa-circle-exclamation", "gold");
+                updateLocalLobbySimulation();
+                return;
+            }
+
+            const newCode = generateRoomCode();
+            currentActiveRoomCode = newCode;
+            document.getElementById('lobby-code-input').value = newCode;
+
+            await updateLobbyPresenceInDatabase();
+            subscribeToLobbyUpdates(newCode);
+            showNotification("Sala Criada!", `Partilha o código [${newCode}] com os teus amigos para jogarem na mesma equipa.`, "fa-square-plus", "gold");
+        }
+
+        async function joinLobbyByCode() {
+            playUiClick();
+            const inputVal = document.getElementById('lobby-code-input').value.trim().toUpperCase();
+            if (!inputVal) {
+                showNotification("Código Inválido", "Introduz um código de sala válido.", "fa-circle-xmark", "red");
+                return;
+            }
+
+            currentActiveRoomCode = inputVal;
+            if (!db) {
+                showNotification("Modo de Simulação", "Sala ativada no modo offline.", "fa-circle-exclamation", "gold");
+                updateLocalLobbySimulation();
+                return;
+            }
+
+            await updateLobbyPresenceInDatabase();
+            subscribeToLobbyUpdates(inputVal);
+            showNotification("Sala Ativada!", `Ligado à equipa com o código: ${inputVal}.`, "fa-network-wired", "emerald");
+        }
+
+        async function updateLobbyPresenceInDatabase() {
+            if (!db || !currentActiveRoomCode) return;
+
+            // RULE 1 Compliance pathing
+            const lobbyDocRef = firebase.doc(db, 'artifacts', appId, 'public', 'data', 'lobbies', currentActiveRoomCode);
+
+            try {
+                const snap = await firebase.getDoc(lobbyDocRef);
+                let currentMembers = [];
+                if (snap.exists()) {
+                    const data = snap.data();
+                    currentMembers = data.members || [];
+                }
+
+                // Filter out self
+                currentMembers = currentMembers.filter(m => m.id !== activeUserProfile.id);
+                // Append self
+                currentMembers.push({
+                    id: activeUserProfile.id,
+                    nickname: activeUserProfile.nickname,
+                    avatarIndex: activeUserProfile.avatarIndex,
+                    clickerScore: activeUserProfile.clickerScore,
+                    runnerHighScore: activeUserProfile.runnerHighScore,
+                    lastActive: Date.now()
+                });
+
+                await firebase.setDoc(lobbyDocRef, {
+                    code: currentActiveRoomCode,
+                    members: currentMembers,
+                    updatedAt: Date.now()
+                }, { merge: true });
+
+            } catch (e) {
+                console.error("Failed to update Firestore presence:", e);
+            }
+        }
+
+        function subscribeToLobbyUpdates(code) {
+            if (lobbyUnsubscribe) {
+                lobbyUnsubscribe();
+            }
+
+            document.getElementById('room-code-tag').textContent = code;
+
+            const lobbyDocRef = firebase.doc(db, 'artifacts', appId, 'public', 'data', 'lobbies', code);
+            
+            lobbyUnsubscribe = firebase.onSnapshot(lobbyDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    currentTeammates = data.members || [];
+                    renderTeammatesList();
+                }
+            }, (err) => {
+                console.error("Firestore listen error: ", err);
+            });
+        }
+
+        function renderTeammatesList() {
+            const listEl = document.getElementById('lobby-members-list');
+            listEl.innerHTML = '';
+
+            if (currentTeammates.length === 0) {
+                listEl.innerHTML = `
+                    <div class="flex items-center justify-center py-8 text-zinc-500 text-xs">
+                        <p>Nenhum parceiro de equipa ativo.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by clicker score
+            const sorted = [...currentTeammates].sort((a, b) => b.clickerScore - a.clickerScore);
+
+            sorted.forEach((member, idx) => {
+                const avatar = AVATAR_POOL[member.avatarIndex] || AVATAR_POOL[0];
+                const isSelf = member.id === activeUserProfile.id;
+
+                const item = document.createElement('div');
+                item.className = `flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border transition-all ${
+                    isSelf 
+                        ? 'bg-mcEmerald/5 border-mcEmerald/30 shadow-md shadow-mcEmerald/5' 
+                        : 'bg-obsidian/60 border-obsidian-border'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="text-xl w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center">${avatar.emoji}</div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-xs text-white">${member.nickname}</span>
+                                ${isSelf ? `<span class="bg-mcEmerald/10 text-mcEmerald border border-mcEmerald/20 text-[9px] px-1.5 py-0.2 rounded font-bold uppercase">TU</span>` : ''}
+                            </div>
+                            <span class="text-[10px] text-zinc-500">Personagem: ${avatar.name}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-obsidian-border/50">
+                        <div class="text-left sm:text-right">
+                            <span class="text-[9px] text-zinc-500 uppercase font-semibold block">Netherite Miner</span>
+                            <span class="text-xs font-mono font-bold text-white"><i class="fa-solid fa-gem text-mcEmerald text-[10px]"></i> ${member.clickerScore}</span>
+                        </div>
+                        <div class="text-left sm:text-right">
+                            <span class="text-[9px] text-zinc-500 uppercase font-semibold block">Kart HighScore</span>
+                            <span class="text-xs font-mono font-bold text-white"><i class="fa-solid fa-motorcycle text-mcGold text-[10px]"></i> ${member.runnerHighScore} pts</span>
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        // Offline Simulator Backup
+        function updateLocalLobbySimulation() {
+            document.getElementById('room-code-tag').textContent = currentActiveRoomCode;
+            currentTeammates = [
+                {
+                    id: activeUserProfile.id,
+                    nickname: activeUserProfile.nickname,
+                    avatarIndex: activeUserProfile.avatarIndex,
+                    clickerScore: activeUserProfile.clickerScore,
+                    runnerHighScore: activeUserProfile.runnerHighScore
+                },
+                {
+                    id: 'bot_steve',
+                    nickname: 'Steve_LobbyBot',
+                    avatarIndex: 0,
+                    clickerScore: 120,
+                    runnerHighScore: 340
+                },
+                {
+                    id: 'bot_alex',
+                    nickname: 'Alex_ProMiner',
+                    avatarIndex: 1,
+                    clickerScore: 540,
+                    runnerHighScore: 610
+                }
+            ];
+            renderTeammatesList();
+        }
+
+        async function refreshActiveLobby() {
+            playUiClick();
+            if (currentActiveRoomCode) {
+                if (db) {
+                    await updateLobbyPresenceInDatabase();
+                } else {
+                    updateLocalLobbySimulation();
+                }
+                showNotification("Sala Atualizada", "Os dados da equipa foram sincronizados com sucesso.", "fa-rotate", "emerald");
+            }
+        }
+
+
+        // --- TAB GAME SWITCHER CONTROLLER ---
+        function switchGameMode(mode) {
+            playUiClick();
+            
+            const btnClicker = document.getElementById('tab-clicker');
+            const btnRunner = document.getElementById('tab-runner');
+            const stageClicker = document.getElementById('game-clicker');
+            const stageRunner = document.getElementById('game-runner');
+
+            if (mode === 'clicker') {
+                btnClicker.className = "px-5 py-3 rounded-xl text-xs font-bold transition-all border border-mcEmerald bg-mcEmerald/10 text-mcEmerald flex items-center gap-2";
+                btnRunner.className = "px-5 py-3 rounded-xl text-xs font-bold transition-all border border-obsidian-border text-zinc-400 hover:text-white flex items-center gap-2";
+                
+                stageClicker.classList.remove('hidden');
+                stageRunner.classList.add('hidden');
+            } else {
+                btnRunner.className = "px-5 py-3 rounded-xl text-xs font-bold transition-all border border-mcEmerald bg-mcEmerald/10 text-mcEmerald flex items-center gap-2";
+                btnClicker.className = "px-5 py-3 rounded-xl text-xs font-bold transition-all border border-obsidian-border text-zinc-400 hover:text-white flex items-center gap-2";
+                
+                stageRunner.classList.remove('hidden');
+                stageClicker.classList.add('hidden');
+                resizeRunnerCanvas();
+            }
+        }
+
+
+        // --- MINI-GAME 1: CLICKER ENGINE ---
+        let autoClickerInterval = null;
+        let upgCosts = {
+            wood_pick: 15,
+            iron_pick: 100,
+            redstone_miner: 250,
+            netherite_drill: 1000
+        };
+        let upgAmounts = {
+            wood_pick: 0,
+            iron_pick: 0,
+            redstone_miner: 0,
+            netherite_drill: 0
+        };
+
+        function triggerMineClick(event) {
+            // Anim trigger
+            const target = document.getElementById('mine-target');
+            target.classList.add('click-active');
+            setTimeout(() => target.classList.remove('click-active'), 100);
+
+            // Compute gains
+            const strength = 1 + (upgAmounts.wood_pick * 1) + (upgAmounts.iron_pick * 5);
+            activeUserProfile.clickerScore += strength;
+            updateClickerDisplay();
+
+            // Sound
+            playSynthSound(100 + Math.random() * 80, 0.12, 'sawtooth', 0.15);
+
+            // Spawn explosive mining visual particles
+            spawnMiningParticles(event, `+${strength}`);
+            saveUserProfileToStorage();
+        }
+
+        function spawnMiningParticles(event, text) {
+            const target = document.getElementById('mine-target');
+            const rect = target.getBoundingClientRect();
+            
+            // Calc click position within the block element
+            let x = rect.width / 2;
+            let y = rect.height / 2;
+
+            if (event) {
+                x = event.clientX - rect.left;
+                y = event.clientY - rect.top;
+            }
+
+            for (let i = 0; i < 6; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'game-particle text-[10px] text-mcEmerald pointer-events-none select-none';
+                particle.textContent = i === 0 ? text : '💎';
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+
+                const tx = (Math.random() - 0.5) * 120;
+                const ty = (Math.random() - 0.5) * 120 - 40; // Shift upwards
+
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+
+                target.appendChild(particle);
+                setTimeout(() => particle.remove(), 600);
+            }
+        }
+
+        function buyClickerUpgrade(upgId) {
+            const cost = upgCosts[upgId];
+            if (activeUserProfile.clickerScore >= cost) {
+                activeUserProfile.clickerScore -= cost;
+                upgAmounts[upgId]++;
+                
+                // Scale next cost exponentially
+                upgCosts[upgId] = Math.round(cost * 1.5);
+                
+                playSynthSound(587.33, 0.15, 'triangle', 0.15);
+                updateClickerDisplay();
+                saveUserProfileToStorage();
+                showNotification("Upgrade Adquirido!", `Adquiriste um reforço de mineração.`, "fa-check-circle", "emerald");
+                
+                // Trigger live sync loop update
+                if (currentActiveRoomCode) {
+                    updateLobbyPresenceInDatabase();
+                }
+            } else {
+                playSynthSound(150, 0.15, 'sawtooth', 0.1);
+                showNotification("Sem Recursos", "Minérios insuficientes para comprar este upgrade.", "fa-circle-xmark", "red");
+            }
+        }
+
+        function updateClickerDisplay() {
+            document.getElementById('clicker-score').textContent = activeUserProfile.clickerScore;
+            
+            // Auto generation calculate
+            const autoCps = (upgAmounts.redstone_miner * 1) + (upgAmounts.netherite_drill * 10);
+            document.getElementById('cps-display').textContent = `${autoCps} Auto-Minério/segundo`;
+
+            // Costs text
+            document.getElementById('cost-wood_pick').textContent = `${upgCosts.wood_pick} Minérios`;
+            document.getElementById('cost-iron_pick').textContent = `${upgCosts.iron_pick} Minérios`;
+            document.getElementById('cost-redstone_miner').textContent = `${upgCosts.redstone_miner} Minérios`;
+            document.getElementById('cost-netherite_drill').textContent = `${upgCosts.netherite_drill} Minérios`;
+        }
+
+        // Loop for auto mining speed
+        function initAutoClickerLoop() {
+            if (autoClickerInterval) clearInterval(autoClickerInterval);
+            autoClickerInterval = setInterval(() => {
+                const autoCps = (upgAmounts.redstone_miner * 1) + (upgAmounts.netherite_drill * 10);
+                if (autoCps > 0) {
+                    activeUserProfile.clickerScore += autoCps;
+                    updateClickerDisplay();
+                    saveUserProfileToStorage();
+                }
+            }, 1000);
+        }
+
+
+        // --- MINI-GAME 2: KART BROS DASH RUNNER ---
+        const canvas = document.getElementById('runner-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let gameLoopId = null;
+        let isGameRunning = false;
+        
+        // Dynamic game world settings
+        let runnerScore = 0;
+        let playerY = 0;
+        let playerVelocityY = 0;
+        const gravity = 0.55;
+        const jumpForce = -9.5;
+        let isGrounded = true;
+
+        let obstacles = [];
+        let gameSpeed = 5;
+        let obstacleSpawnTimer = 0;
+
+        // Auto Resize canvas bounding maintaining aspect ratio
+        function resizeRunnerCanvas() {
+            const container = document.getElementById('canvas-container');
+            const rect = container.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        window.addEventListener('resize', resizeRunnerCanvas);
+
+        // Inputs control handling both Desktop keyboard & Mobile taps
+        function triggerPlayerJump() {
+            if (isGrounded && isGameRunning) {
+                playerVelocityY = jumpForce;
+                isGrounded = false;
+                playSynthSound(280, 0.1, 'sine', 0.1);
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+                e.preventDefault();
+                triggerPlayerJump();
+            }
+        });
+
+        document.getElementById('mobile-jump-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            triggerPlayerJump();
+        });
+        document.getElementById('mobile-jump-btn').addEventListener('click', (e) => {
+            triggerPlayerJump();
+        });
+
+        function startRunnerGame() {
+            resizeRunnerCanvas();
+            isGameRunning = true;
+            runnerScore = 0;
+            gameSpeed = 5;
+            obstacles = [];
+            playerY = canvas.height - 50;
+            playerVelocityY = 0;
+            isGrounded = true;
+            obstacleSpawnTimer = 0;
+
+            document.getElementById('runner-overlay').classList.add('opacity-0', 'pointer-events-none');
+            playSynthSound(587.33, 0.2, 'sine');
+
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+            gameLoopId = requestAnimationFrame(updateRunnerFrame);
+        }
+
+        function endRunnerGame() {
+            isGameRunning = false;
+            cancelAnimationFrame(gameLoopId);
+
+            playSynthSound(130, 0.5, 'sawtooth', 0.2);
+
+            // Highscore track update
+            if (runnerScore > activeUserProfile.runnerHighScore) {
+                activeUserProfile.runnerHighScore = runnerScore;
+                saveUserProfileToStorage();
+                document.getElementById('runner-high-live').textContent = runnerScore;
+                showNotification("Novo Recorde!", `Conseguiste um score incrível de ${runnerScore}!`, "fa-trophy", "gold");
+                
+                // Real-time update
+                if (currentActiveRoomCode) {
+                    updateLobbyPresenceInDatabase();
+                }
+            }
+
+            document.getElementById('runner-overlay-title').textContent = "JOGO TERMINADO";
+            document.getElementById('runner-overlay-desc').textContent = `Ficaste sem combustível! Pontuação Final: ${runnerScore} pts.`;
+            document.getElementById('runner-overlay').classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function updateRunnerFrame() {
+            if (!isGameRunning) return;
+
+            // Clear Screen
+            ctx.fillStyle = '#0F111A';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Drawing Nether background line grids (parallax illusion)
+            ctx.fillStyle = '#1D1324';
+            ctx.fillRect(0, canvas.height - 60, canvas.width, 60); // ground base line
+            
+            ctx.strokeStyle = '#2D1F38';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height - 60);
+            ctx.lineTo(canvas.width, canvas.height - 60);
+            ctx.stroke();
+
+            // Apply gravity mechanics
+            playerVelocityY += gravity;
+            playerY += playerVelocityY;
+
+            const groundLimit = canvas.height - 100; // character fits block heights
+            if (playerY >= groundLimit) {
+                playerY = groundLimit;
+                playerVelocityY = 0;
+                isGrounded = true;
+            }
+
+            // Draw player character (based on chosen avatar)
+            const avatar = AVATAR_POOL[activeUserProfile.avatarIndex];
+            ctx.font = '32px sans-serif';
+            ctx.fillText(avatar.emoji, 40, playerY + 32);
+
+            // Obstacles handling manager
+            obstacleSpawnTimer--;
+            if (obstacleSpawnTimer <= 0) {
+                const obsTypes = [
+                    { emoji: '🔥', width: 24, height: 32, type: 'fire' },
+                    { emoji: '🧨', width: 24, height: 32, type: 'tnt' },
+                    { emoji: '🧟', width: 26, height: 32, type: 'mob' }
+                ];
+                const selectedType = obsTypes[Math.floor(Math.random() * obsTypes.length)];
+                obstacles.push({
+                    x: canvas.width,
+                    y: canvas.height - 95,
+                    width: selectedType.width,
+                    height: selectedType.height,
+                    emoji: selectedType.emoji
+                });
+                
+                // Dynamic randomized timers based on difficulty
+                obstacleSpawnTimer = 60 + Math.random() * 80 - (gameSpeed * 2.5);
+            }
+
+            // Process and draw obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obs = obstacles[i];
+                obs.x -= gameSpeed;
+
+                // Draw emoji obstacles
+                ctx.font = '28px sans-serif';
+                ctx.fillText(obs.emoji, obs.x, obs.y + 28);
+
+                // Simple collision box check
+                const px = 40;
+                const py = playerY;
+                const pw = 32;
+                const ph = 32;
+
+                if (px < obs.x + obs.width &&
+                    px + pw > obs.x &&
+                    py < obs.y + obs.height &&
+                    py + ph > obs.y) {
+                    endRunnerGame();
+                    return;
+                }
+
+                // Delete offscreen elements
+                if (obs.x + obs.width < 0) {
+                    obstacles.splice(i, 1);
+                    runnerScore += 10;
+                    document.getElementById('runner-score-live').textContent = runnerScore;
+                    
+                    // Increment speed scale slowly
+                    gameSpeed += 0.08;
+                }
+            }
+
+            gameLoopId = requestAnimationFrame(updateRunnerFrame);
+        }
+
+
+        // --- DYNAMIC SURVIVAL QUIZ COMPONENT ---
+        const QUIZ_DATA = [
+            {
+                q: "Qual é a ferramenta ideal para partir obsidiana?",
+                a: ["Picareta de Ferro", "Picareta de Diamante", "Picareta de Ouro", "Qualquer Picareta"],
+                correct: 1,
+                cat: "Mineração"
+            },
+            {
+                q: "O que acontece se dormires numa cama no Nether?",
+                a: ["Fica de dia", "Recuperas vida", "A cama explode violentamente", "Fazes spawn point"],
+                correct: 2,
+                cat: "Nether"
+            },
+            {
+                q: "Que item usas para domesticar um lobo?",
+                a: ["Osso", "Carne Podre", "Peixe Cozido", "Trigo"],
+                correct: 0,
+                cat: "Animais"
+            },
+            {
+                q: "Qual destes materiais é imune ao fogo e lava?",
+                a: ["Ferro", "Diamante", "Netherite", "Pedra de Nether"],
+                correct: 2,
+                cat: "Sobrevivência"
+            },
+            {
+                q: "Como crias um Golem de Ferro em Minecraft?",
+                a: ["Ferro e uma Cenoura", "Blocos de Ferro e uma Abóbora", "Ouro e Neve", "Alavanca e Pedra"],
+                correct: 1,
+                cat: "Construção"
+            }
+        ];
+
+        let quizIndex = 0;
+        let quizScore = 0;
+
+        function renderQuizQuestion() {
+            const current = QUIZ_DATA[quizIndex];
+            document.getElementById('quiz-curr').textContent = quizIndex + 1;
+            document.getElementById('quiz-total').textContent = QUIZ_DATA.length;
+            document.getElementById('quiz-category').textContent = current.cat;
+            document.getElementById('quiz-question-txt').textContent = current.q;
+
+            const box = document.getElementById('quiz-options-box');
+            box.innerHTML = '';
+
+            current.a.forEach((option, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 bg-obsidian/60 hover:bg-obsidian border border-obsidian-border hover:border-mcEmerald/40 rounded-xl transition-all text-xs font-semibold text-zinc-300 hover:text-white flex items-center justify-between group";
+                btn.onclick = () => checkQuizAnswer(idx);
+                btn.innerHTML = `
+                    <span>${option}</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-zinc-600 group-hover:text-mcEmerald transition-colors"></i>
+                `;
+                box.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(selectedIdx) {
+            const current = QUIZ_DATA[quizIndex];
+            const isCorrect = selectedIdx === current.correct;
+
+            if (isCorrect) {
+                quizScore++;
+                playSynthSound(523.25, 0.12, 'sine', 0.15);
+                showNotification("Resposta Correta!", "Conhecimento de mestre demonstrado.", "fa-circle-check", "emerald");
+            } else {
+                playSynthSound(180, 0.2, 'sawtooth', 0.12);
+                showNotification("Errado!", `A resposta correta era: ${current.a[current.correct]}`, "fa-circle-xmark", "red");
+            }
+
+            // Move forward
+            setTimeout(() => {
+                quizIndex++;
+                if (quizIndex < QUIZ_DATA.length) {
+                    renderQuizQuestion();
+                } else {
+                    renderQuizResults();
+                }
+            }, 800);
+        }
+
+        function renderQuizResults() {
+            const box = document.getElementById('quiz-block');
+            box.innerHTML = `
+                <div class="text-center py-6">
+                    <span class="text-xs text-mcGold font-extrabold uppercase tracking-wider block mb-2"><i class="fa-solid fa-trophy mr-1"></i> Quiz Concluído</span>
+                    <h3 class="text-xl font-extrabold text-white mb-2">A tua pontuação</h3>
+                    <p class="text-zinc-400 text-xs max-w-sm mx-auto mb-6">Acertaste em <strong class="text-mcEmerald">${quizScore}</strong> de ${QUIZ_DATA.length} perguntas de sobrevivência.</p>
+                    
+                    <button onclick="resetQuizGame()" class="bg-mcEmerald hover:bg-mcEmerald-light text-obsidian font-extrabold text-xs py-3.5 px-8 rounded-xl transition-all">
+                        TENTAR NOVAMENTE
+                    </button>
+                </div>
+            `;
+        }
+
+        function resetQuizGame() {
+            quizIndex = 0;
+            quizScore = 0;
+            const box = document.getElementById('quiz-block');
+            box.innerHTML = `
+                <div id="quiz-stage">
+                    <div class="flex items-center justify-between text-xs text-zinc-500 mb-6">
+                        <span>Questão <span id="quiz-curr" class="text-white font-bold">1</span> de <span id="quiz-total" class="text-white">5</span></span>
+                        <span class="bg-zinc-800 px-2 py-1 rounded" id="quiz-category">Sobrevivência</span>
+                    </div>
+
+                    <h3 class="text-base md:text-lg font-bold text-white mb-6" id="quiz-question-txt">A carregar pergunta...</h3>
+
+                    <div class="space-y-3" id="quiz-options-box"></div>
+                </div>
+            `;
+            renderQuizQuestion();
+        }
+
+
+        // --- INITIALIZATION ---
+        window.addEventListener('load', () => {
+            // Remove global initial loading bar
+            const loader = document.getElementById('global-loader');
+            if (loader) loader.style.display = 'none';
+
+            loadUserProfileFromLocalStorage();
+            initFirebaseMultiplayer();
+            
+            // Start components
+            updateClickerDisplay();
+            initAutoClickerLoop();
+            renderQuizQuestion();
+            resizeRunnerCanvas();
+        });
+    </script>
+</body>
+</html>
+
