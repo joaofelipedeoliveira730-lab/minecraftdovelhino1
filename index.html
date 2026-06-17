@@ -3,376 +3,346 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Velho Studios - Servidor Minecraft</title>
+<title>Minecraft Bedrock Server</title>
 
 <style>
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
 }
 
 body{
-background:#0d0d0d;
-color:white;
-overflow-x:hidden;
+    min-height:100vh;
+    overflow-x:hidden;
+    color:white;
+    background:#000;
 }
 
-/* INTRO */
-
-#intro{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:9999;
-animation:sumir 4s forwards;
+/* FUNDO ANIMADO */
+.bg{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:linear-gradient(
+        45deg,
+        #000,
+        #ffd700,
+        #111,
+        #ffb300,
+        #000
+    );
+    background-size:400% 400%;
+    animation:gradient 12s ease infinite;
 }
 
-.logo{
-font-size:60px;
-font-weight:bold;
-color:#00ff88;
-text-shadow:0 0 20px #00ff88;
-animation:pulse 1.5s infinite;
+.bg::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    backdrop-filter:blur(80px);
+    background:rgba(0,0,0,.25);
+}
+
+@keyframes gradient{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+/* PARTICULAS */
+.particle{
+    position:fixed;
+    width:8px;
+    height:8px;
+    background:#ffd700;
+    opacity:.5;
+    border-radius:2px;
+    animation:float 15s linear infinite;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(110vh) rotate(0deg);
+    }
+    to{
+        transform:translateY(-20vh) rotate(360deg);
+    }
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:25px;
+}
+
+.hero{
+    text-align:center;
+    padding:70px 20px;
+}
+
+.hero h1{
+    font-size:clamp(2.2rem,6vw,4.5rem);
+    text-shadow:0 0 25px #ffd700;
+    animation:pulse 2s infinite;
+}
+
+.hero h2{
+    margin-top:15px;
+    color:#ffe082;
 }
 
 @keyframes pulse{
-50%{
-transform:scale(1.1);
-}
-}
-
-@keyframes sumir{
-0%,80%{
-opacity:1;
-}
-100%{
-opacity:0;
-visibility:hidden;
-}
-}
-
-/* FUNDO */
-
-.fundo{
-position:fixed;
-width:100%;
-height:100%;
-z-index:-1;
-overflow:hidden;
-}
-
-.bloco{
-position:absolute;
-width:20px;
-height:20px;
-background:#00ff88;
-opacity:.15;
-animation:flutuar linear infinite;
-}
-
-@keyframes flutuar{
-from{
-transform:translateY(100vh) rotate(0deg);
-}
-to{
-transform:translateY(-100px) rotate(360deg);
-}
-}
-
-header{
-padding:30px;
-text-align:center;
-background:#111;
-border-bottom:3px solid #00ff88;
-}
-
-header h1{
-color:#00ff88;
+    50%{
+        transform:scale(1.03);
+    }
 }
 
 .card{
-max-width:900px;
-margin:20px auto;
-background:#171717;
-padding:20px;
-border-radius:15px;
-box-shadow:0 0 15px rgba(0,255,136,.3);
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.15);
+    backdrop-filter:blur(20px);
+    border-radius:25px;
+    padding:25px;
+    margin-top:25px;
+    box-shadow:0 0 35px rgba(255,215,0,.25);
 }
 
-.server{
-text-align:center;
+.info-box{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:15px;
 }
 
-.server h2{
-color:#00ff88;
-margin-bottom:10px;
+.copy{
+    flex:1;
+    min-width:200px;
+    background:rgba(0,0,0,.3);
+    border-radius:15px;
+    padding:15px;
 }
 
-.info{
-font-size:20px;
-margin:10px;
+.copy p{
+    color:#ddd;
+    margin-bottom:8px;
+}
+
+.copy-value{
+    font-weight:bold;
+    font-size:1.1rem;
+    word-break:break-all;
 }
 
 button{
-padding:10px 20px;
-background:#00ff88;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
-margin:5px;
+    border:none;
+    cursor:pointer;
 }
 
-button:hover{
-transform:scale(1.05);
+.copy-btn{
+    margin-top:12px;
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    background:linear-gradient(45deg,#ffd700,#ff9800);
+    color:#000;
+    font-weight:bold;
+    transition:.3s;
 }
 
-.tabs{
-display:flex;
-justify-content:center;
-gap:10px;
-flex-wrap:wrap;
-margin-bottom:20px;
+.copy-btn:hover{
+    transform:translateY(-3px) scale(1.03);
 }
 
-.tab{
-display:none;
+.join-btn{
+    display:inline-block;
+    margin-top:30px;
+    padding:18px 35px;
+    text-decoration:none;
+    color:black;
+    font-weight:900;
+    font-size:1.1rem;
+    border-radius:50px;
+    background:linear-gradient(45deg,#fff176,#ffd700,#ff9800);
+    box-shadow:0 0 35px #ffd700;
+    animation:glow 2s infinite;
+    transition:.3s;
 }
 
-.tab.active{
-display:block;
+.join-btn:hover{
+    transform:scale(1.08);
 }
 
-.chat{
-height:250px;
-background:#0f0f0f;
-overflow-y:auto;
-padding:10px;
-border-radius:10px;
-margin-bottom:10px;
+@keyframes glow{
+    50%{
+        box-shadow:0 0 60px #ffd700;
+    }
 }
 
-.chat input{
-width:100%;
-padding:10px;
-margin-top:10px;
+.minecraft-box{
+    text-align:center;
+    margin-top:40px;
 }
 
-canvas{
-background:black;
-display:block;
-margin:auto;
-border:2px solid #00ff88;
+.minecraft-box h3{
+    margin-bottom:15px;
 }
 
-footer{
-text-align:center;
-padding:30px;
-margin-top:30px;
-border-top:1px solid #333;
+.blocks{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.block{
+    width:90px;
+    height:90px;
+    border-radius:15px;
+    animation:jump 2s infinite;
+}
+
+.block:nth-child(1){
+    background:#4caf50;
+}
+
+.block:nth-child(2){
+    background:#795548;
+    animation-delay:.3s;
+}
+
+.block:nth-child(3){
+    background:#9e9e9e;
+    animation-delay:.6s;
+}
+
+.block:nth-child(4){
+    background:#ffeb3b;
+    animation-delay:.9s;
+}
+
+@keyframes jump{
+    50%{
+        transform:translateY(-15px) rotate(5deg);
+    }
+}
+
+.footer{
+    text-align:center;
+    margin:50px 0 20px;
+    color:#eee;
+}
+
+@media(max-width:700px){
+    .info-box{
+        flex-direction:column;
+    }
 }
 </style>
 </head>
 <body>
 
-<div id="intro">
-<div class="logo">VELHO STUDIOS</div>
+<div class="bg"></div>
+
+<div class="container">
+
+    <div class="hero">
+        <h1>🎮 SERVIDOR MINECRAFT BEDROCK</h1>
+        <h2>Versão: 1.26.23.1 (Bedrock)</h2>
+
+        <a href="https://add.aternos.org/AUramausego" target="_blank" class="join-btn">
+            🚀 Entrar no Minecraft Já com servidor adicionado
+        </a>
+    </div>
+
+    <div class="card">
+        <h2>📋 Informações do Servidor</h2>
+
+        <div class="info-box">
+
+            <div class="copy">
+                <p>IP</p>
+                <div class="copy-value" id="ip">
+                    AUramausego.aternos.me
+                </div>
+
+                <button class="copy-btn"
+                onclick="copyText('AUramausego.aternos.me')">
+                    Copiar IP
+                </button>
+            </div>
+
+            <div class="copy">
+                <p>Porta</p>
+                <div class="copy-value" id="porta">
+                    54608
+                </div>
+
+                <button class="copy-btn"
+                onclick="copyText('54608')">
+                    Copiar Porta
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card minecraft-box">
+        <h3>⛏️ Explore, Construa e Divirta-se!</h3>
+
+        <div class="blocks">
+            <div class="block"></div>
+            <div class="block"></div>
+            <div class="block"></div>
+            <div class="block"></div>
+        </div>
+
+        <p style="margin-top:20px;">
+            Entre agora no servidor e jogue com seus amigos!
+        </p>
+    </div>
+
+    <div class="footer">
+        Minecraft Bedrock • Servidor Online 🌟
+    </div>
+
 </div>
-
-<div class="fundo" id="fundo"></div>
-
-<header>
-<h1>Servidor Minecraft Bedrock</h1>
-</header>
-
-<div class="card server">
-<h2>Informações do Servidor</h2>
-
-<div class="info">
-IP: AUramausego.aternos.me
-</div>
-
-<button onclick="copiar('AUramausego.aternos.me')">
-Copiar IP
-</button>
-
-<div class="info">
-Porta: 54608
-</div>
-
-<button onclick="copiar('54608')">
-Copiar Porta
-</button>
-
-<div class="info">
-Versão: 1.26.23.1
-</div>
-
-<div class="info">
-Edição: Bedrock
-</div>
-</div>
-
-<div class="card">
-<h2>Como Entrar</h2>
-
-<div class="tabs">
-<button onclick="abrir('celular')">Celular</button>
-<button onclick="abrir('switch')">Nintendo</button>
-<button onclick="abrir('pc')">PC</button>
-</div>
-
-<div id="celular" class="tab active">
-<p>Abra Minecraft → Jogar → Servidores → Adicionar Servidor.</p>
-</div>
-
-<div id="switch" class="tab">
-<p>Abra Minecraft Bedrock → Servidores → Adicionar Servidor.</p>
-</div>
-
-<div id="pc" class="tab">
-<p>Abra Minecraft Bedrock → Jogar → Servidores → Adicionar Servidor.</p>
-</div>
-</div>
-
-<div class="card">
-<h2>Chat Mundial</h2>
-
-<div class="chat" id="chat">
-<p>Bem-vindo ao chat!</p>
-</div>
-
-<input id="msg" placeholder="Digite sua mensagem">
-
-<button onclick="enviar()">
-Enviar
-</button>
-</div>
-
-<div class="card">
-<h2>Mini Game - Cobrinha</h2>
-
-<canvas id="game" width="400" height="400"></canvas>
-</div>
-
-<footer>
-Desenvolvido por Velho Studios
-</footer>
 
 <script>
+function copyText(text){
+    navigator.clipboard.writeText(text);
 
-/* FUNDO */
+    const toast = document.createElement("div");
 
-for(let i=0;i<40;i++){
-let b=document.createElement('div');
-b.className='bloco';
-b.style.left=Math.random()*100+'%';
-b.style.animationDuration=(5+Math.random()*10)+'s';
-document.getElementById('fundo').appendChild(b);
+    toast.innerText = "✅ Copiado com sucesso!";
+    toast.style.position = "fixed";
+    toast.style.bottom = "20px";
+    toast.style.right = "20px";
+    toast.style.padding = "15px 25px";
+    toast.style.background = "#ffd700";
+    toast.style.color = "#000";
+    toast.style.fontWeight = "bold";
+    toast.style.borderRadius = "15px";
+    toast.style.zIndex = "9999";
+
+    document.body.appendChild(toast);
+
+    setTimeout(()=>{
+        toast.remove();
+    },2000);
 }
 
-function copiar(texto){
-navigator.clipboard.writeText(texto);
-alert("Copiado!");
+for(let i=0;i<35;i++){
+    const p=document.createElement("div");
+    p.classList.add("particle");
+    p.style.left=Math.random()*100+"vw";
+    p.style.animationDuration=(10+Math.random()*15)+"s";
+    p.style.opacity=Math.random();
+    p.style.width=(5+Math.random()*8)+"px";
+    p.style.height=p.style.width;
+    document.body.appendChild(p);
 }
-
-function abrir(id){
-
-document.querySelectorAll('.tab').forEach(t=>{
-t.classList.remove('active');
-});
-
-document.getElementById(id).classList.add('active');
-}
-
-function enviar(){
-
-let texto=document.getElementById('msg').value;
-
-if(texto=="") return;
-
-let p=document.createElement('p');
-p.innerText=texto;
-
-document.getElementById('chat').appendChild(p);
-
-document.getElementById('msg').value="";
-}
-
-/* COBRINHA */
-
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
-
-let snake=[{x:10,y:10}];
-let food={x:15,y:15};
-
-let dx=1;
-let dy=0;
-
-document.addEventListener("keydown",e=>{
-
-if(e.key=="ArrowUp"){
-dx=0;dy=-1;
-}
-
-if(e.key=="ArrowDown"){
-dx=0;dy=1;
-}
-
-if(e.key=="ArrowLeft"){
-dx=-1;dy=0;
-}
-
-if(e.key=="ArrowRight"){
-dx=1;dy=0;
-}
-
-});
-
-function loop(){
-
-let head={
-x:snake[0].x+dx,
-y:snake[0].y+dy
-};
-
-snake.unshift(head);
-
-if(head.x==food.x && head.y==food.y){
-
-food={
-x:Math.floor(Math.random()*20),
-y:Math.floor(Math.random()*20)
-};
-
-}else{
-snake.pop();
-}
-
-ctx.clearRect(0,0,400,400);
-
-ctx.fillStyle="lime";
-
-snake.forEach(s=>{
-ctx.fillRect(s.x*20,s.y*20,18,18);
-});
-
-ctx.fillStyle="red";
-ctx.fillRect(food.x*20,food.y*20,18,18);
-
-}
-
-setInterval(loop,120);
-
 </script>
 
 </body>
