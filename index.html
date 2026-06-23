@@ -1,349 +1,480 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minecraft Bedrock Server</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
-
-body{
-    min-height:100vh;
-    overflow-x:hidden;
-    color:white;
-    background:#000;
-}
-
-/* FUNDO ANIMADO */
-.bg{
-    position:fixed;
-    inset:0;
-    z-index:-2;
-    background:linear-gradient(
-        45deg,
-        #000,
-        #ffd700,
-        #111,
-        #ffb300,
-        #000
-    );
-    background-size:400% 400%;
-    animation:gradient 12s ease infinite;
-}
-
-.bg::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    backdrop-filter:blur(80px);
-    background:rgba(0,0,0,.25);
-}
-
-@keyframes gradient{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-
-/* PARTICULAS */
-.particle{
-    position:fixed;
-    width:8px;
-    height:8px;
-    background:#ffd700;
-    opacity:.5;
-    border-radius:2px;
-    animation:float 15s linear infinite;
-}
-
-@keyframes float{
-    from{
-        transform:translateY(110vh) rotate(0deg);
-    }
-    to{
-        transform:translateY(-20vh) rotate(360deg);
-    }
-}
-
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:25px;
-}
-
-.hero{
-    text-align:center;
-    padding:70px 20px;
-}
-
-.hero h1{
-    font-size:clamp(2.2rem,6vw,4.5rem);
-    text-shadow:0 0 25px #ffd700;
-    animation:pulse 2s infinite;
-}
-
-.hero h2{
-    margin-top:15px;
-    color:#ffe082;
-}
-
-@keyframes pulse{
-    50%{
-        transform:scale(1.03);
-    }
-}
-
-.card{
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.15);
-    backdrop-filter:blur(20px);
-    border-radius:25px;
-    padding:25px;
-    margin-top:25px;
-    box-shadow:0 0 35px rgba(255,215,0,.25);
-}
-
-.info-box{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-top:15px;
-}
-
-.copy{
-    flex:1;
-    min-width:200px;
-    background:rgba(0,0,0,.3);
-    border-radius:15px;
-    padding:15px;
-}
-
-.copy p{
-    color:#ddd;
-    margin-bottom:8px;
-}
-
-.copy-value{
-    font-weight:bold;
-    font-size:1.1rem;
-    word-break:break-all;
-}
-
-button{
-    border:none;
-    cursor:pointer;
-}
-
-.copy-btn{
-    margin-top:12px;
-    width:100%;
-    padding:12px;
-    border-radius:12px;
-    background:linear-gradient(45deg,#ffd700,#ff9800);
-    color:#000;
-    font-weight:bold;
-    transition:.3s;
-}
-
-.copy-btn:hover{
-    transform:translateY(-3px) scale(1.03);
-}
-
-.join-btn{
-    display:inline-block;
-    margin-top:30px;
-    padding:18px 35px;
-    text-decoration:none;
-    color:black;
-    font-weight:900;
-    font-size:1.1rem;
-    border-radius:50px;
-    background:linear-gradient(45deg,#fff176,#ffd700,#ff9800);
-    box-shadow:0 0 35px #ffd700;
-    animation:glow 2s infinite;
-    transition:.3s;
-}
-
-.join-btn:hover{
-    transform:scale(1.08);
-}
-
-@keyframes glow{
-    50%{
-        box-shadow:0 0 60px #ffd700;
-    }
-}
-
-.minecraft-box{
-    text-align:center;
-    margin-top:40px;
-}
-
-.minecraft-box h3{
-    margin-bottom:15px;
-}
-
-.blocks{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    flex-wrap:wrap;
-}
-
-.block{
-    width:90px;
-    height:90px;
-    border-radius:15px;
-    animation:jump 2s infinite;
-}
-
-.block:nth-child(1){
-    background:#4caf50;
-}
-
-.block:nth-child(2){
-    background:#795548;
-    animation-delay:.3s;
-}
-
-.block:nth-child(3){
-    background:#9e9e9e;
-    animation-delay:.6s;
-}
-
-.block:nth-child(4){
-    background:#ffeb3b;
-    animation-delay:.9s;
-}
-
-@keyframes jump{
-    50%{
-        transform:translateY(-15px) rotate(5deg);
-    }
-}
-
-.footer{
-    text-align:center;
-    margin:50px 0 20px;
-    color:#eee;
-}
-
-@media(max-width:700px){
-    .info-box{
-        flex-direction:column;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUramausego :: Servidor Minecraft Bedrock</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: VT323 para Pixel Art e Outfit para Texto Moderno -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=VT323&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        pixel: ['"VT323"', 'monospace'],
+                        sans: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        mine: {
+                            'dark': '#06080b',
+                            'darker': '#020304',
+                            'green': '#00ff66',
+                            'glow': 'rgba(0, 255, 102, 0.4)',
+                        }
+                    },
+                    boxShadow: {
+                        'glow-soft': '0 0 20px rgba(0, 255, 102, 0.15)',
+                        'glow-strong': '0 0 35px rgba(0, 255, 102, 0.4)',
+                        'glow-inner': 'inset 0 0 15px rgba(0, 255, 102, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos de transição e efeitos adicionais */
+        .glass {
+            background: rgba(6, 8, 11, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 255, 102, 0.12);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass:hover {
+            border-color: rgba(0, 255, 102, 0.35);
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.1);
+            transform: translateY(-2px);
+        }
+        /* Brilho pulsante no título */
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 102, 0.3), 0 0 20px rgba(0, 255, 102, 0.1); }
+            50% { text-shadow: 0 0 20px rgba(0, 255, 102, 0.6), 0 0 40px rgba(0, 255, 102, 0.3); }
+        }
+        .glow-title {
+            animation: textGlow 4s infinite ease-in-out;
+        }
+        /* Botão Verde Minecraft néon */
+        .btn-mine {
+            background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%);
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-mine:hover {
+            box-shadow: 0 0 35px rgba(0, 255, 102, 0.7);
+            transform: scale(1.05);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020304;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00ff66;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-mine-darker text-neutral-100 font-sans min-h-screen relative overflow-x-hidden flex flex-col justify-between">
 
-<div class="bg"></div>
+    <!-- Canvas para Fundo de Partículas 3D de Cubos -->
+    <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
-<div class="container">
+    <!-- Overlay de Vinheta Escura -->
+    <div class="fixed inset-0 pointer-events-none z-10 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(2,3,4,0.9)_100%)]"></div>
 
-    <div class="hero">
-        <h1>🎮 SERVIDOR MINECRAFT BEDROCK</h1>
-        <h2>Versão: 1.26.30.5 (Bedrock)</h2>
+    <!-- Interface Principal -->
+    <div class="relative z-20 flex-1 flex flex-col justify-between">
+        
+        <!-- Cabeçalho -->
+        <header class="p-6 max-w-7xl mx-auto w-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- Logótipo SVG Customizado de Bloco de Relva Estilizado -->
+                <svg class="w-10 h-10 text-mine-green drop-shadow-[0_0_10px_rgba(0,255,102,0.5)]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#00ff66" />
+                    <path d="M2 17L12 22V12L2 7V17Z" fill="#00b347" />
+                    <path d="M22 17L12 22V12L22 7V17Z" fill="#008033" />
+                </svg>
+                <div class="flex flex-col">
+                    <span class="font-pixel text-4xl text-mine-green tracking-wide leading-none glow-title">AUramausego</span>
+                    <span class="text-[10px] text-neutral-400 font-mono tracking-widest uppercase">Servidor Bedrock</span>
+                </div>
+            </div>
+            
+            <!-- Indicador Online Dinâmico -->
+            <div class="flex items-center gap-3 bg-black/40 border border-mine-green/20 px-4 py-2 rounded-full">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mine-green opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-mine-green"></span>
+                </span>
+                <span class="text-xs font-mono text-mine-green font-bold uppercase tracking-wider" id="server-status-text">Online</span>
+            </div>
+        </header>
 
-        <a href="https://add.aternos.org/AUramausego" target="_blank" class="join-btn">
-            🚀 Entrar no Minecraft Já com servidor adicionado
-        </a>
+        <!-- Corpo Principal -->
+        <main class="max-w-4xl mx-auto w-full px-6 py-8 flex flex-col justify-center items-center gap-8">
+            
+            <!-- Cartão Principal de Destaque -->
+            <div class="w-full glass rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-glow-soft">
+                <div class="absolute -top-24 -right-24 w-60 h-60 bg-mine-green/10 rounded-full blur-[100px] pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-60 h-60 bg-mine-green/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+                <div class="flex flex-col md:flex-row items-center gap-8 justify-between relative z-10">
+                    
+                    <!-- Lado Esquerdo: Info Clave -->
+                    <div class="space-y-6 flex-1 w-full text-center md:text-left">
+                        <div class="inline-block bg-mine-green/10 text-mine-green border border-mine-green/30 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide">
+                            🟢 IP & PORTA OFICIAIS
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">Pronto para a <span class="text-mine-green">Aventura?</span></h2>
+                        <p class="text-neutral-400 text-base max-w-md">Liga-te ao melhor mundo de Minecraft Bedrock. Copia as credenciais rápidas abaixo ou inicia diretamente o jogo.</p>
+                        
+                        <!-- Dados do Servidor -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                            
+                            <!-- Campo IP -->
+                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 relative group hover:border-mine-green/30 transition-all">
+                                <span class="text-xs text-neutral-500 block mb-1">IP DO SERVIDOR</span>
+                                <div class="flex items-center justify-between">
+                                    <span class="font-mono text-neutral-200 select-all" id="ip-text">AUramausego.aternos.me</span>
+                                    <button onclick="copyData('ip-text', 'IP')" class="text-neutral-400 hover:text-mine-green transition-colors p-1" title="Copiar IP">
+                                        <i data-lucide="copy" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Campo Porta -->
+                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 relative group hover:border-mine-green/30 transition-all">
+                                <span class="text-xs text-neutral-500 block mb-1">PORTA</span>
+                                <div class="flex items-center justify-between">
+                                    <span class="font-mono text-neutral-200 select-all" id="port-text">54608</span>
+                                    <button onclick="copyData('port-text', 'Porta')" class="text-neutral-400 hover:text-mine-green transition-colors p-1" title="Copiar Porta">
+                                        <i data-lucide="copy" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Campo Versão -->
+                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 sm:col-span-2 flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs text-neutral-500 block">VERSÃO COMPATÍVEL</span>
+                                    <span class="font-mono text-neutral-200">Bedrock 1.26.31.1</span>
+                                </div>
+                                <div class="bg-mine-green/5 border border-mine-green/20 text-mine-green text-xs px-3 py-1 rounded-full font-bold">
+                                    ESTÁVEL
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Lado Direito: Ação Rápida e Imagem Espacial -->
+                    <div class="flex flex-col items-center p-8 bg-mine-dark/80 border border-white/5 rounded-2xl w-full md:w-80 shadow-inner">
+                        <!-- Icone de Creeper Minimalista em SVG -->
+                        <div class="relative w-32 h-32 mb-6">
+                            <svg class="w-full h-full text-mine-green filter drop-shadow-[0_0_15px_rgba(0,255,102,0.2)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="100" height="100" rx="16" fill="#0b130e" stroke="#00ff66" stroke-width="2"/>
+                                <!-- Creeper Face -->
+                                <rect x="20" y="25" width="20" height="20" fill="#00ff66"/>
+                                <rect x="60" y="25" width="20" height="20" fill="#00ff66"/>
+                                <rect x="40" y="45" width="20" height="25" fill="#00ff66"/>
+                                <rect x="30" y="60" width="10" height="20" fill="#00ff66"/>
+                                <rect x="60" y="60" width="10" height="20" fill="#00ff66"/>
+                            </svg>
+                        </div>
+                        
+                        <h4 class="text-xl font-bold tracking-tight text-neutral-200 mb-2">Entrar Direto</h4>
+                        <p class="text-xs text-neutral-500 text-center mb-6">Inicia o teu Minecraft Bedrock e adiciona automaticamente à lista.</p>
+                        
+                        <a href="https://add.aternos.org/AUramausego" target="_blank" onclick="playConnectSound()" class="w-full">
+                            <button class="btn-mine w-full text-mine-dark font-extrabold py-4 px-6 rounded-xl flex items-center justify-center gap-3">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                                JOGAR AGORA
+                            </button>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Dicas / Funcionalidades Interativas do Site -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+                <div class="glass p-5 rounded-2xl flex items-center gap-4">
+                    <div class="p-3 bg-mine-green/10 text-mine-green rounded-xl">
+                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-sm font-bold text-neutral-200">Sem Lag</h5>
+                        <p class="text-xs text-neutral-400">Servidores otimizados</p>
+                    </div>
+                </div>
+                <div class="glass p-5 rounded-2xl flex items-center gap-4">
+                    <div class="p-3 bg-mine-green/10 text-mine-green rounded-xl">
+                        <i data-lucide="smartphone" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-sm font-bold text-neutral-200">Bedrock Edition</h5>
+                        <p class="text-xs text-neutral-400">Compatível com telemóvel & PC</p>
+                    </div>
+                </div>
+                <div class="glass p-5 rounded-2xl flex items-center gap-4 cursor-pointer" onclick="toggleMute()">
+                    <div class="p-3 bg-mine-green/10 text-mine-green rounded-xl" id="volume-icon-container">
+                        <i data-lucide="volume-2" class="w-6 h-6" id="volume-icon"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-sm font-bold text-neutral-200" id="volume-title">Sons Ativados</h5>
+                        <p class="text-xs text-neutral-400">Clica para silenciar</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Rodapé -->
+        <footer class="p-6 text-center text-xs text-neutral-600 relative z-10 border-t border-white/5 bg-black/40">
+            <p>&copy; 2026 AUramausego. Desenvolvido com efeitos néon dinâmicos.</p>
+            <p class="mt-1">Não afiliado oficialmente com a Mojang Studios ou Minecraft.</p>
+        </footer>
+
     </div>
 
-    <div class="card">
-        <h2>📋 Informações do Servidor</h2>
-
-        <div class="info-box">
-
-            <div class="copy">
-                <p>IP</p>
-                <div class="copy-value" id="ip">
-                    AUramausego.aternos.me
-                </div>
-
-                <button class="copy-btn"
-                onclick="copyText('AUramausego.aternos.me')">
-                    Copiar IP
-                </button>
-            </div>
-
-            <div class="copy">
-                <p>Porta</p>
-                <div class="copy-value" id="porta">
-                    54608
-                </div>
-
-                <button class="copy-btn"
-                onclick="copyText('54608')">
-                    Copiar Porta
-                </button>
-            </div>
-
+    <!-- Alertas Interativos (Toast Notification) -->
+    <div id="toast-notif" class="fixed bottom-6 right-6 z-50 glass px-6 py-4 rounded-2xl border-mine-green shadow-glow-strong flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300">
+        <div class="bg-mine-green/20 p-2 rounded-lg text-mine-green">
+            <i data-lucide="check" class="w-5 h-5"></i>
+        </div>
+        <div>
+            <span class="text-xs text-neutral-400 block uppercase font-bold tracking-wider" id="toast-title">Copiado</span>
+            <span class="text-sm text-neutral-100 font-semibold" id="toast-desc">Copiado com sucesso!</span>
         </div>
     </div>
 
-    <div class="card minecraft-box">
-        <h3>⛏️ Explore, Construa e Divirta-se!</h3>
+    <!-- Lógica de Funcionamento e Efeitos -->
+    <script>
+        // Inicialização de Ícones
+        lucide.createIcons();
 
-        <div class="blocks">
-            <div class="block"></div>
-            <div class="block"></div>
-            <div class="block"></div>
-            <div class="block"></div>
-        </div>
+        // ----------------- SISTEMA DE ÁUDIO MINECRAFT -----------------
+        let isMuted = false;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
 
-        <p style="margin-top:20px;">
-            Entre agora no servidor e jogue com seus amigos!
-        </p>
-    </div>
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
 
-    <div class="footer">
-        Minecraft Bedrock • Servidor Online 🌟
-    </div>
+        // Som de Clique do Minecraft (Clássico toque curto)
+        function playClickSound() {
+            if (isMuted) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
 
-</div>
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
 
-<script>
-function copyText(text){
-    navigator.clipboard.writeText(text);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.08);
 
-    const toast = document.createElement("div");
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
 
-    toast.innerText = "✅ Copiado com sucesso!";
-    toast.style.position = "fixed";
-    toast.style.bottom = "20px";
-    toast.style.right = "20px";
-    toast.style.padding = "15px 25px";
-    toast.style.background = "#ffd700";
-    toast.style.color = "#000";
-    toast.style.fontWeight = "bold";
-    toast.style.borderRadius = "15px";
-    toast.style.zIndex = "9999";
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
 
-    document.body.appendChild(toast);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.09);
+        }
 
-    setTimeout(()=>{
-        toast.remove();
-    },2000);
-}
+        // Som de Level Up (Arpejo clássico)
+        function playConnectSound() {
+            if (isMuted) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
 
-for(let i=0;i<35;i++){
-    const p=document.createElement("div");
-    p.classList.add("particle");
-    p.style.left=Math.random()*100+"vw";
-    p.style.animationDuration=(10+Math.random()*15)+"s";
-    p.style.opacity=Math.random();
-    p.style.width=(5+Math.random()*8)+"px";
-    p.style.height=p.style.width;
-    document.body.appendChild(p);
-}
-</script>
+            const notes = [440, 554.37, 659.25, 880]; // Notas do som de experiência
+            const duration = 0.12;
 
+            notes.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(audioCtx.currentTime + idx * 0.08);
+                osc.stop(audioCtx.currentTime + idx * 0.08 + duration);
+            });
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const iconContainer = document.getElementById('volume-icon-container');
+            const title = document.getElementById('volume-title');
+            
+            if (isMuted) {
+                iconContainer.innerHTML = '<i data-lucide="volume-x" class="w-6 h-6"></i>';
+                title.innerText = "Sons Mutados";
+            } else {
+                iconContainer.innerHTML = '<i data-lucide="volume-2" class="w-6 h-6"></i>';
+                title.innerText = "Sons Ativados";
+                playClickSound();
+            }
+            lucide.createIcons();
+        }
+
+        // ----------------- CÓPIA E INTERATIVIDADE -----------------
+        function copyData(elementId, label) {
+            playClickSound();
+            const textToCopy = document.getElementById(elementId).innerText;
+            
+            // Método robusto alternativo de cópia para prevenir problemas de Iframe
+            const tempInput = document.createElement("input");
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            showToast(label, "Copiado com sucesso!");
+        }
+
+        function showToast(title, message) {
+            const toast = document.getElementById('toast-notif');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-desc').innerText = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // ----------------- SISTEMA DE PARTICULAS (CANVAS 3D CUBES) -----------------
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        let mouse = { x: null, y: null };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // Classe de partícula representando um cubo rotativo
+        class CubeParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height + canvas.height;
+                this.size = Math.random() * 15 + 8; // tamanho do cubo
+                this.speedY = -(Math.random() * 1 + 0.5); // sobe
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = Math.random() * 0.02 - 0.01;
+                this.alpha = Math.random() * 0.3 + 0.1;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.angle += this.spin;
+
+                // Loop vertical
+                if (this.y < -this.size) {
+                    this.y = canvas.height + this.size;
+                    this.x = Math.random() * canvas.width;
+                }
+
+                // Repulsão suave do rato
+                if (mouse.x !== null && mouse.x !== null) {
+                    let dx = this.x - mouse.x;
+                    let dy = this.y - mouse.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 150) {
+                        let force = (150 - distance) / 150;
+                        this.x += (dx / distance) * force * 4;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.strokeStyle = `rgba(0, 255, 102, ${this.alpha})`;
+                ctx.lineWidth = 1.5;
+                
+                // Desenhar face principal do cubo em wireframe para estilo cibernético
+                ctx.strokeRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                
+                // Efeito 3D ilusório (linhas traseiras)
+                ctx.beginPath();
+                ctx.moveTo(-this.size / 2, -this.size / 2);
+                ctx.lineTo(-this.size / 3, -this.size / 3);
+                ctx.lineTo(this.size * 0.6, -this.size / 3);
+                ctx.lineTo(this.size / 2, -this.size / 2);
+                ctx.stroke();
+
+                ctx.restore();
+            }
+        }
+
+        // Criar as partículas iniciais
+        function initParticles() {
+            particles = [];
+            const count = Math.min(Math.floor(window.innerWidth / 20), 60);
+            for (let i = 0; i < count; i++) {
+                particles.push(new CubeParticle());
+                // Distribuir uniformemente no início
+                particles[i].y = Math.random() * canvas.height;
+            }
+        }
+        initParticles();
+
+        // Loop de Animação
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Inicia assim que a página é carregada
+        window.onload = function() {
+            animate();
+        }
+    </script>
 </body>
 </html>
