@@ -1,479 +1,980 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BomVelhinho.Oficial</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts: VT323 para Pixel Art e Outfit para Texto Moderno -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=VT323&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        pixel: ['"VT323"', 'monospace'],
-                        sans: ['"Outfit"', 'sans-serif'],
-                    },
-                    colors: {
-                        mine: {
-                            'dark': '#06080b',
-                            'darker': '#020304',
-                            'green': '#00ff66',
-                            'glow': 'rgba(0, 255, 102, 0.4)',
-                        }
-                    },
-                    boxShadow: {
-                        'glow-soft': '0 0 20px rgba(0, 255, 102, 0.15)',
-                        'glow-strong': '0 0 35px rgba(0, 255, 102, 0.4)',
-                        'glow-inner': 'inset 0 0 15px rgba(0, 255, 102, 0.2)',
-                    }
-                }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub dos Amigos - VIP Space</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts (Inter & Montserrat) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            ceo: {
+              400: '#ef4444',
+              500: '#dc2626',
+              600: '#b91c1c',
+              glow: '#ff2d2d',
+            },
+            glass: {
+              bg: 'rgba(15, 23, 42, 0.75)',
+              card: 'rgba(30, 41, 59, 0.65)',
+              border: 'rgba(255, 255, 255, 0.1)',
             }
+          },
+          boxShadow: {
+            'ceo-glow': '0 0 25px -5px rgba(220, 38, 38, 0.6), 0 0 10px -5px rgba(220, 38, 38, 0.4)',
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+          }
         }
-    </script>
-    <style>
-        /* Estilos de transição e efeitos adicionais */
-        .glass {
-            background: rgba(6, 8, 11, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 255, 102, 0.12);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .glass:hover {
-            border-color: rgba(0, 255, 102, 0.35);
-            box-shadow: 0 0 30px rgba(0, 255, 102, 0.1);
-            transform: translateY(-2px);
-        }
-        /* Brilho pulsante no título */
-        @keyframes textGlow {
-            0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 102, 0.3), 0 0 20px rgba(0, 255, 102, 0.1); }
-            50% { text-shadow: 0 0 20px rgba(0, 255, 102, 0.6), 0 0 40px rgba(0, 255, 102, 0.3); }
-        }
-        .glow-title {
-            animation: textGlow 4s infinite ease-in-out;
-        }
-        /* Botão Verde Minecraft néon */
-        .btn-mine {
-            background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%);
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .btn-mine:hover {
-            box-shadow: 0 0 35px rgba(0, 255, 102, 0.7);
-            transform: scale(1.05);
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 14px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #020304;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #00ff66;
-            border-radius: 8px;
-        }
-        
-       .pt1{
-           color: ff000
-         
-        
-        }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilos personalizados de Blur e Efeitos */
+    body {
+      background: radial-gradient(circle at top left, #1e1b4b, #0f172a, #020617);
+      background-attachment: fixed;
+      color: #f8fafc;
+    }
+    
+    .glass-panel {
+      background: rgba(30, 41, 59, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+    }
+    .glass-input:focus {
+      border-color: #ef4444;
+      outline: none;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Scrollbar estilizada */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.8);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(239, 68, 68, 0.5);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(239, 68, 68, 0.8);
+    }
+
+    /* Efeito de badge pulsante para o CEO */
+    .ceo-badge-glow {
+      animation: pulse-red 2s infinite alternate;
+    }
+    @keyframes pulse-red {
+      0% { box-shadow: 0 0 8px rgba(220, 38, 38, 0.5); }
+      100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.9); }
+    }
+  </style>
 </head>
-<body class="bg-mine-darker text-neutral-100 font-sans min-h-screen relative overflow-x-hidden flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-red-500 selection:text-white">
 
-    <!-- Canvas para Fundo de Partículas 3D de Cubos -->
-    <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+  <!-- NOTIFICAÇÃO TOAST CUSTOMIZADA -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-out flex items-center gap-3 px-5 py-3 rounded-xl glass-panel border-l-4 border-red-500 shadow-2xl text-sm font-medium">
+    <i id="toast-icon" class="fa-solid fa-circle-info text-red-500 text-lg"></i>
+    <span id="toast-msg">Mensagem da notificação</span>
+  </div>
 
-    <!-- Overlay de Vinheta Escura -->
-    <div class="fixed inset-0 pointer-events-none z-10 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(2,3,4,0.9)_100%)]"></div>
-
-    <!-- Interface Principal -->
-    <div class="relative z-20 flex-1 flex flex-col justify-between">
-        
-        <!-- Cabeçalho -->
-        <header class="p-6 max-w-7xl mx-auto w-full flex items-center justify-between">
-                
-                <div class="flex flex-col">
-                    <span class="font-pixel text-4xl text-mine-green tracking-wide leading-none glow-title">BomVelhinho</span>
-                    <span class="text-[10px] text-neutral-400 font-mono tracking-widest uppercase">Site Oficial</span>
-                </div>
-            </div>
-            
-            <!-- Indicador Online Dinâmico -->
-            <div id="PT1" class="flex items-center gap-3 bg-black/40 border border-mine-yellow/20 px-3 py-3 rounded-full">
-                <span class="relative flex h-3 w-3">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mine-yellow opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-mine-yellow"></span>
-                </span>
-                <span class="text-xs font-mono text-mine-red font-bold uppercase tracking-wider" id="server-status-text">Fora do Banco de Dados (🟡)</span>
-            </div>
-        </header>
-
-        <!-- Corpo Principal --
-            
-            <!-- Cartão Principal de Destaque -->
-            <div class="w-full glass rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-glow-soft">
-                <div class="absolute -top-24 -right-24 w-60 h-60 bg-mine-green/10 rounded-full blur-[100px] pointer-events-none"></div>
-                <div class="absolute -bottom-24 -left-24 w-60 h-60 bg-mine-green/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-                <div class="flex flex-col md:flex-row items-center gap-8 justify-between relative z-10">
-                    
-                    <!-- Lado Esquerdo: Info Clave -->
-                    <div class="space-y-6 flex-1 w-full text-center md:text-left">
-                        <div class="inline-block bg-mine-green/10 text-mine-green border border-mine-green/30 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide">
-                             IP & PORTA OFICIAIS
-                        </div>
-                        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">Pronto para a <span class="text-mine-green">Aventura?</span></h2>
-                        <p class="text-neutral-400 text-base max-w-md">Liga-te ao melhor mundo de Minecraft Bedrock. Copia as credenciais rápidas abaixo ou inicia diretamente o jogo.</p>
-                        
-                        <!-- Dados do Servidor -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                            
-                            <!-- Campo IP -->
-                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 relative group hover:border-mine-green/30 transition-all">
-                                <span class="text-xs text-neutral-500 block mb-1">IP DO SERVIDOR</span>
-                                <div class="flex items-center justify-between">
-                                    <span class="font-mono text-neutral-200 select-all" id="ip-text">AUramausego.aternos.me</span>
-                                    <button onclick="copyData('ip-text', 'IP')" class="text-neutral-400 hover:text-mine-green transition-colors p-1" title="Copiar IP">
-                                        <i data-lucide="copy" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Campo Porta -->
-                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 relative group hover:border-mine-green/30 transition-all">
-                                <span class="text-xs text-neutral-500 block mb-1">PORTA</span>
-                                <div class="flex items-center justify-between">
-                                    <span class="font-mono text-neutral-200 select-all" id="port-text">54608</span>
-                                    <button onclick="copyData('port-text', 'Porta')" class="text-neutral-400 hover:text-mine-green transition-colors p-1" title="Copiar Porta">
-                                        <i data-lucide="copy" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Campo Versão -->
-                            <div class="bg-black/40 p-5 rounded-2x2 border border-white/5 sm:col-span-3 flex items-center justify-between">
-                                <div>
-                                    <span class="text-xs text-neutral-500 block">VERSÃO COMPATÍVEL</span>
-                                    <span class="font-mono text-neutral-200">Bedrock 1.26.31.1</span>
-                                </div>
-                                <div class="bg-mine-green/5 border border-mine-green/20 text-mine-green text-xs px-3 py-3 rounded-full font-bold">
-                                    FORA DO BANCO DE DADOS (🟡)
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Lado Direito: Ação Rápida e Imagem Espacial -->
-                    <div class="flex flex-col items-center p-8 bg-mine-dark/80 border border-white/5 rounded-2xl w-full md:w-80 shadow-inner">
-                        <!-- Icone de Creeper Minimalista em SVG -->
-                        <div class="relative w-32 h-32 mb-6">
-                            <svg class="w-full h-full text-mine-green filter drop-shadow-[0_0_15px_rgba(0,255,102,0.2)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="100" rx="16" fill="#0b130e" stroke="#00ff66" stroke-width="2"/>
-                                <!-- Creeper Face -->
-                                <rect x="20" y="25" width="20" height="20" fill="#00ff66"/>
-                                <rect x="60" y="25" width="20" height="20" fill="#00ff66"/>
-                                <rect x="40" y="45" width="20" height="25" fill="#00ff66"/>
-                                <rect x="30" y="60" width="10" height="20" fill="#00ff66"/>
-                                <rect x="60" y="60" width="10" height="20" fill="#00ff66"/>
-                            </svg>
-                        </div>
-                        
-                        <h4 class="text-xl font-bold tracking-tight text-neutral-200 mb-2">Entrar Direto</h4>
-                        <p class="text-xs text-neutral-500 text-center mb-6">Inicia o teu Minecraft Bedrock e adiciona automaticamente à lista.</p>
-                        
-                        <a href="https://add.aternos.org/AUramausego" target="_blank" onclick="playConnectSound()" class="w-full">
-                            <button class="btn-mine w-full text-mine-dark font-extrabold py-4 px-6 rounded-xl flex items-center justify-center gap-3">
-                                <i data-lucide="external-link" class="w-5 h-5"></i>
-                                JOGAR AGORA
-                            </button>
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Dicas / Funcionalidades Interativas do Site -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-                <div class="glass p-5 rounded-2xl flex items-center gap-4">
-                    <div class="p-3 bg-mine-green/10 text-mine-green rounded-xl">
-                        <i data-lucide="zap" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h5 class="text-sm font-bold text-neutral-200">Sem Lag</h5>
-                        <p class="text-xs text-neutral-400">Servidores otimizados</p>
-                    </div>
-                </div>
-                <div class="glass p-5 rounded-2xl flex items-center gap-4">
-                    <div class="p-3 bg-mine-green/10 text-mine-green rounded-xl">
-                        <i data-lucide="smartphone" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h5 class="text-sm font-bold text-neutral-200">Bedrock Edition</h5>
-                        <p class="text-xs text-neutral-400">Compatível com telemóvel & PC</p>
-                    </div>
-                </div>
-                <div class="glass p-5 rounded-2xl flex items-center gap-4 cursor-pointer" onclick="toggleMute()">
-                    <div class="p-3 bg-mine-green/10 text-mine-green rounded-xl" id="volume-icon-container">
-                        <i data-lucide="volume-2" class="w-6 h-6" id="volume-icon"></i>
-                    </div>
-                    <div>
-                        <h5 class="text-sm font-bold text-neutral-200" id="volume-title">Sons Ativados</h5>
-                        <p class="text-xs text-neutral-400">Clica para silenciar</p>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Rodapé -->
-        <footer class="p-6 text-center text-xs text-neutral-600 relative z-10 border-t border-white/5 bg-black/40">
-            <p>&copy; 2026 AUramausego. Desenvolvido com efeitos néon dinâmicos.</p>
-            <p class="mt-1">Não afiliado oficialmente com a Mojang Studios ou Minecraft.</p>
-        </footer>
-
-    </div>
-
-    <!-- Alertas Interativos (Toast Notification) -->
-    <div id="toast-notif" class="fixed bottom-6 right-6 z-50 glass px-6 py-4 rounded-2xl border-mine-green shadow-glow-strong flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300">
-        <div class="bg-mine-green/20 p-2 rounded-lg text-mine-green">
-            <i data-lucide="check" class="w-5 h-5"></i>
+  <!-- NAVEGAÇÃO SUPERIOR FIXA (HEADER) -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-white/10 px-4 lg:px-8 py-3 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      
+      <!-- LOGO / NOME -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center shadow-ceo-glow text-white font-black text-xl tracking-wider">
+          HQ
         </div>
         <div>
-            <span class="text-xs text-neutral-400 block uppercase font-bold tracking-wider" id="toast-title">Copiado</span>
-            <span class="text-sm text-neutral-100 font-semibold" id="toast-desc">Copiado com sucesso!</span>
+          <h1 class="font-display font-black text-lg md:text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+            AMIGOS<span class="text-red-500">.HUB</span>
+          </h1>
+          <p class="text-[10px] text-slate-400 font-medium tracking-wider uppercase -mt-1">Espaço Exclusivo</p>
         </div>
+      </div>
+
+      <!-- STATUS DE USUÁRIO / BOTÃO LOGIN -->
+      <div id="user-header-status" class="flex items-center gap-3">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL (PÁGINA ÚNICA CONTINUA) -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+    <!-- BANNER DE BOAS-VINDAS & MURAL FIXADO (CEO) -->
+    <section class="relative rounded-3xl overflow-hidden glass-panel p-6 sm:p-8 border border-white/10 shadow-2xl">
+      <!-- Fundo Decorativo Glow -->
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-red-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
+            <i class="fa-solid fa-bullhorn text-red-500"></i> Mural Oficial da Galera
+          </div>
+          <h2 id="hero-welcome-title" class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+            Bem-vindo ao Nosso Portal
+          </h2>
+          <p id="hero-announcement-text" class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            Aqui você encontra nossos links favoritos, marca sua presença nos rolês e fica por dentro de todos os avisos fixados pelo CEO!
+          </p>
+        </div>
+
+        <!-- Ação exclusiva do CEO para editar anúncio -->
+        <div id="ceo-announcement-controls" class="hidden shrink-0">
+          <button onclick="openAnnouncementModal()" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium text-sm flex items-center gap-2 transition-all shadow-ceo-glow">
+            <i class="fa-solid fa-pen-to-square"></i> Editar Anúncio
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVEGAÇÃO ENTRE ABAS DA MESMA PÁGINA -->
+    <div class="flex items-center justify-center sm:justify-start gap-2 border-b border-white/10 pb-4 overflow-x-auto">
+      <button onclick="switchTab('sites')" id="tab-btn-sites" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-red-600 text-white shadow-ceo-glow">
+        <i class="fa-solid fa-globe"></i> Aba de Sites Fixados
+      </button>
+      <button onclick="switchTab('presenca')" id="tab-btn-presenca" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5">
+        <i class="fa-solid fa-clipboard-user"></i> Lista de Presença
+      </button>
     </div>
 
-    <!-- Lógica de Funcionamento e Efeitos -->
-    <script>
-        // Inicialização de Ícones
-        lucide.createIcons();
+    <!-- SEÇÃO 1: ABA DE SITES (RECURSO PRINCIPAL) -->
+    <section id="section-sites" class="space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-compass text-red-500"></i> Central de Links e Atalhos
+          </h3>
+          <p class="text-xs text-slate-400">Acesse com um clique os sites essenciais do nosso grupo.</p>
+        </div>
 
-        // ----------------- SISTEMA DE ÁUDIO MINECRAFT -----------------
-        let isMuted = false;
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx = null;
+        <!-- Botão Adicionar Site (Apenas CEO pode fixar) -->
+        <div id="ceo-add-site-container" class="hidden">
+          <button onclick="openAddSiteModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-ceo-glow transition-all">
+            <i class="fa-solid fa-plus-circle"></i> Fixar Novo Site (CEO)
+          </button>
+        </div>
+      </div>
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-            }
-        }
+      <!-- GRID DE SITES FIXADOS -->
+      <div id="sites-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Renderizado dinamicamente pelo JS -->
+      </div>
 
-        // Som de Clique do Minecraft (Clássico toque curto)
-        function playClickSound() {
-            if (isMuted) return;
-            initAudio();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+      <!-- VISUALIZADOR DE SITES (Iframe rápido integrado) -->
+      <div id="iframe-preview-wrapper" class="hidden glass-panel rounded-2xl border border-white/10 overflow-hidden mt-8 shadow-2xl">
+        <div class="px-4 py-3 bg-slate-900/80 border-b border-white/10 flex items-center justify-between">
+          <div class="flex items-center gap-2 text-xs text-slate-300 font-mono">
+            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+            <span id="iframe-title" class="font-semibold text-white">Visualizador</span>
+            <span id="iframe-url-display" class="text-slate-500 truncate max-w-xs"></span>
+          </div>
+          <div class="flex items-center gap-3">
+            <a id="iframe-external-link" href="#" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
+              Abrir em nova aba <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+            <button onclick="closeIframe()" class="text-slate-400 hover:text-red-400 text-sm">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+        <div class="relative w-full h-[500px] bg-slate-950">
+          <iframe id="site-iframe" src="" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+        </div>
+      </div>
+    </section>
 
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+    <!-- SEÇÃO 2: LISTA DE PRESENÇA (RSVP) -->
+    <section id="section-presenca" class="hidden space-y-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- FORMULÁRIO DE CONFIRMAÇÃO (Membros) -->
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-5 h-fit">
+          <div class="space-y-1">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-pen-nib text-red-500"></i> Marcar Presença
+            </h3>
+            <p class="text-xs text-slate-400">Informe se você estará presente no próximo evento ou rolê!</p>
+          </div>
 
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(450, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.08);
+          <form id="presence-form" onsubmit="handlePresenceSubmit(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Seu Nome / Apelido</label>
+              <input type="text" id="presence-name" required placeholder="Ex: Lucas Silva" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm focus:outline-none">
+            </div>
 
-            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Confirmação</label>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 glass-input cursor-pointer hover:bg-white/5 transition-all">
+                  <input type="radio" name="status" value="Sim" checked class="accent-red-500">
+                  <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-check"></i> VOU SIM
+                  </span>
+                </label>
+                <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 glass-input cursor-pointer hover:bg-white/5 transition-all">
+                  <input type="radio" name="status" value="Não" class="accent-red-500">
+                  <span class="text-xs font-bold text-red-400 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-xmark"></i> NÃO VOU
+                  </span>
+                </label>
+              </div>
+            </div>
 
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Recado / Observação (Opcional)</label>
+              <textarea id="presence-comment" rows="3" placeholder="Ex: Chego mais tarde pelas 20h!" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm focus:outline-none resize-none"></textarea>
+            </div>
 
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.09);
-        }
+            <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-ceo-glow transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i> Enviar Confirmação
+            </button>
+          </form>
+        </div>
 
-        // Som de Level Up (Arpejo clássico)
-        function playConnectSound() {
-            if (isMuted) return;
-            initAudio();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+        <!-- LISTA DE CONFIRMADOS E AUSENTES -->
+        <div class="lg:col-span-2 space-y-4">
+          
+          <!-- RESUMO DE ESTATÍSTICAS -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div class="glass-panel p-4 rounded-xl border border-white/10 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-user-check"></i>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 uppercase font-bold">Confirmados</p>
+                <p id="count-yes" class="text-xl font-black text-emerald-400">0</p>
+              </div>
+            </div>
 
-            const notes = [440, 554.37, 659.25, 880]; // Notas do som de experiência
-            const duration = 0.12;
+            <div class="glass-panel p-4 rounded-xl border border-white/10 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-user-xmark"></i>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 uppercase font-bold">Ausentes</p>
+                <p id="count-no" class="text-xl font-black text-red-400">0</p>
+              </div>
+            </div>
 
-            notes.forEach((freq, idx) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+            <div class="col-span-2 sm:col-span-1 glass-panel p-4 rounded-xl border border-white/10 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 uppercase font-bold">Total Respostas</p>
+                <p id="count-total" class="text-xl font-black text-white">0</p>
+              </div>
+            </div>
+          </div>
 
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+          <!-- LISTAGEM DETALHADA DAS RESPOSTAS -->
+          <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+              <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-red-500"></i> Lista de Respostas Atualizada
+              </h4>
+              <span class="text-xs text-slate-400">Ordem em tempo real</span>
+            </div>
 
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime + idx * 0.08);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + duration);
+            <div id="presence-list" class="space-y-3 max-h-[450px] overflow-y-auto pr-2">
+              <!-- Renderizado dinamicamente por JS -->
+            </div>
+          </div>
 
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
+        </div>
 
-                osc.start(audioCtx.currentTime + idx * 0.08);
-                osc.stop(audioCtx.currentTime + idx * 0.08 + duration);
-            });
-        }
+      </div>
 
-        function toggleMute() {
-            isMuted = !isMuted;
-            const iconContainer = document.getElementById('volume-icon-container');
-            const title = document.getElementById('volume-title');
-            
-            if (isMuted) {
-                iconContainer.innerHTML = '<i data-lucide="volume-x" class="w-6 h-6"></i>';
-                title.innerText = "Sons Mutados";
-            } else {
-                iconContainer.innerHTML = '<i data-lucide="volume-2" class="w-6 h-6"></i>';
-                title.innerText = "Sons Ativados";
-                playClickSound();
-            }
-            lucide.createIcons();
-        }
+    </section>
 
-        // ----------------- CÓPIA E INTERATIVIDADE -----------------
-        function copyData(elementId, label) {
-            playClickSound();
-            const textToCopy = document.getElementById(elementId).innerText;
-            
-            // Método robusto alternativo de cópia para prevenir problemas de Iframe
-            const tempInput = document.createElement("input");
-            tempInput.value = textToCopy;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
+  </main>
 
-            showToast(label, "Copiado com sucesso!");
-        }
+  <!-- RODAPÉ DA PÁGINA (FOOTER INTEGRAD0) -->
+  <footer class="w-full glass-panel border-t border-white/10 mt-16 py-8 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+      <div class="space-y-1">
+        <p class="text-sm font-bold text-slate-300">AMIGOS.HUB &copy; 2026 - Espaço Exclusivo de Membros</p>
+        <p class="text-xs text-slate-500">Desenvolvido com sistema de privilégios de Admin e visual Frosted Glass.</p>
+      </div>
 
-        function showToast(title, message) {
-            const toast = document.getElementById('toast-notif');
-            document.getElementById('toast-title').innerText = title;
-            document.getElementById('toast-desc').innerText = message;
+      <div class="flex items-center gap-4 text-xs text-slate-400">
+        <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+          <i class="fa-solid fa-shield-halved text-red-500"></i> Sistema de Senha Ativo
+        </span>
+        <button onclick="scrollToTop()" class="p-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-all">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
 
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
+  <!-- MODAL DE LOGIN / AUTENTICAÇÃO -->
+  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden">
+    <div class="glass-panel max-w-md w-full p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl relative space-y-6">
+      <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
 
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-red-900 mx-auto flex items-center justify-center text-white text-2xl shadow-ceo-glow">
+          <i class="fa-solid fa-user-lock"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Acessar Conta / Identificação</h3>
+        <p class="text-xs text-slate-400">Entre como membro ou use a senha de CEO para poderes de administração.</p>
+      </div>
 
-        // ----------------- SISTEMA DE PARTICULAS (CANVAS 3D CUBES) -----------------
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
+      <!-- ABAS DENTRO DO MODAL -->
+      <div class="flex bg-slate-900/60 p-1 rounded-xl border border-white/10 text-xs font-semibold">
+        <button onclick="switchLoginMode('member')" id="btn-mode-member" class="flex-1 py-2 rounded-lg bg-red-600 text-white transition-all">
+          Sou Membro
+        </button>
+        <button onclick="switchLoginMode('ceo')" id="btn-mode-ceo" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all">
+          <i class="fa-solid fa-crown text-red-500 mr-1"></i> Acesso CEO / Admin
+        </button>
+      </div>
 
-        let particles = [];
-        let mouse = { x: null, y: null };
+      <!-- FORMULÁRIO MEMBRO -->
+      <form id="form-login-member" onsubmit="handleMemberLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Seu Nome / Apelido</label>
+          <input type="text" id="member-name-input" required placeholder="Digite como quer ser chamado" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm">
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-sm transition-all">
+          Entrar como Visitante/Membro
+        </button>
+      </form>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+      <!-- FORMULÁRIO CEO ADMIN -->
+      <form id="form-login-ceo" onsubmit="handleCeoLogin(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Nome do Administrador</label>
+          <input type="text" id="ceo-name-input" value="CEO Supremo" required class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Senha Secreta CEO</label>
+          <input type="password" id="ceo-password-input" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm border-red-500/50">
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-ceo-glow transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-key"></i> Autenticar Privilégios CEO
+        </button>
+      </form>
+    </div>
+  </div>
 
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        });
+  <!-- MODAL: FIXAR NOVO SITE (EXCLUSIVO CEO) -->
+  <div id="add-site-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden">
+    <div class="glass-panel max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl relative space-y-5">
+      <button onclick="closeAddSiteModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
 
-        window.addEventListener('mouseout', () => {
-            mouse.x = null;
-            mouse.y = null;
-        });
+      <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center text-lg shadow-ceo-glow">
+          <i class="fa-solid fa-plus"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white">Fixar Novo Site na Aba</h3>
+          <p class="text-xs text-slate-400">Apenas o usuário CEO pode adicionar novos links.</p>
+        </div>
+      </div>
 
-        // Classe de partícula representando um cubo rotativo
-        class CubeParticle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height + canvas.height;
-                this.size = Math.random() * 15 + 8; // tamanho do cubo
-                this.speedY = -(Math.random() * 1 + 0.5); // sobe
-                this.angle = Math.random() * Math.PI * 2;
-                this.spin = Math.random() * 0.02 - 0.01;
-                this.alpha = Math.random() * 0.3 + 0.1;
-            }
+      <form onsubmit="handleAddSiteSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Título do Site / Nome</label>
+          <input type="text" id="site-title-input" required placeholder="Ex: Servidor do Discord ou Canal Youtube" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm">
+        </div>
 
-            update() {
-                this.y += this.speedY;
-                this.angle += this.spin;
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Endereço URL Completo (https://...)</label>
+          <input type="url" id="site-url-input" required placeholder="https://exemplo.com" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm">
+        </div>
 
-                // Loop vertical
-                if (this.y < -this.size) {
-                    this.y = canvas.height + this.size;
-                    this.x = Math.random() * canvas.width;
-                }
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Descrição Breve</label>
+          <input type="text" id="site-desc-input" placeholder="Ex: Nosso grupo de voz principal nos finais de semana" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm">
+        </div>
 
-                // Repulsão suave do rato
-                if (mouse.x !== null && mouse.x !== null) {
-                    let dx = this.x - mouse.x;
-                    let dy = this.y - mouse.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 150) {
-                        let force = (150 - distance) / 150;
-                        this.x += (dx / distance) * force * 4;
-                    }
-                }
-            }
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Ícone Temático</label>
+          <select id="site-icon-input" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm bg-slate-900">
+            <option value="fa-globe">🌐 Global / Geral</option>
+            <option value="fa-gamepad">🎮 Jogos / Gaming</option>
+            <option value="fa-discord">💬 Comunicação / Chat</option>
+            <option value="fa-youtube">📺 Vídeos / Mídia</option>
+            <option value="fa-music">🎵 Música / Playlist</option>
+            <option value="fa-folder-open">📁 Documentos / Utilidade</option>
+          </select>
+        </div>
 
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle);
-                ctx.strokeStyle = `rgba(0, 255, 102, ${this.alpha})`;
-                ctx.lineWidth = 1.5;
-                
-                // Desenhar face principal do cubo em wireframe para estilo cibernético
-                ctx.strokeRect(-this.size / 2, -this.size / 2, this.size, this.size);
-                
-                // Efeito 3D ilusório (linhas traseiras)
-                ctx.beginPath();
-                ctx.moveTo(-this.size / 2, -this.size / 2);
-                ctx.lineTo(-this.size / 3, -this.size / 3);
-                ctx.lineTo(this.size * 0.6, -this.size / 3);
-                ctx.lineTo(this.size / 2, -this.size / 2);
-                ctx.stroke();
+        <div class="pt-2 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeAddSiteModal()" class="px-4 py-2.5 rounded-xl text-slate-400 hover:text-white text-sm">Cancelar</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-ceo-glow transition-all">
+            Fixar Site
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-                ctx.restore();
-            }
-        }
+  <!-- MODAL: EDITAR ANÚNCIO DO MURAL (EXCLUSIVO CEO) -->
+  <div id="announcement-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden">
+    <div class="glass-panel max-w-lg w-full p-6 rounded-3xl border border-white/10 shadow-2xl relative space-y-4">
+      <button onclick="closeAnnouncementModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
 
-        // Criar as partículas iniciais
-        function initParticles() {
-            particles = [];
-            const count = Math.min(Math.floor(window.innerWidth / 20), 60);
-            for (let i = 0; i < count; i++) {
-                particles.push(new CubeParticle());
-                // Distribuir uniformemente no início
-                particles[i].y = Math.random() * canvas.height;
-            }
-        }
-        initParticles();
+      <h3 class="text-lg font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-bullhorn text-red-500"></i> Atualizar Mensagem Principal (CEO)
+      </h3>
 
-        // Loop de Animação
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-            requestAnimationFrame(animate);
-        }
+      <form onsubmit="handleAnnouncementSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Título do Banner</label>
+          <input type="text" id="announcement-title-input" required class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Texto de Destaque / Aviso</label>
+          <textarea id="announcement-body-input" rows="4" required class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm resize-none"></textarea>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeAnnouncementModal()" class="px-4 py-2 rounded-xl text-slate-400 text-sm">Cancelar</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-ceo-glow">Salvar e Publicar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-        // Inicia assim que a página é carregada
-        window.onload = function() {
-            animate();
-        }
-    </script>
+  <!-- LÓGICA E SCRIPT JAVASCRIPT -->
+  <script>
+    // --- ESTADO INICIAL DA APLICAÇÃO ---
+    const CEO_PASSWORD_SECRET = "AdminBV123";
+
+    // Dados do Usuário Logado
+    let currentUser = {
+      name: "Visitante",
+      isCeo: false
+    };
+
+    // Dados Iniciais do Mural Fixado
+    let announcementData = {
+      title: "Próximo Encontro da Galera 🚀",
+      body: "Confiram os sites úteis abaixo e não se esqueçam de marcar presença na lista para o evento deste final de semana!"
+    };
+
+    // Lista Inicial de Sites Fixados
+    let sitesList = [
+      {
+        id: 1,
+        title: "YouTube",
+        url: "https://www.youtube.com",
+        desc: "Plataforma de vídeos e lives para assistir junto com o pessoal.",
+        icon: "fa-youtube",
+        pinnedByCeo: true
+      },
+      {
+        id: 2,
+        title: "Discord",
+        url: "https://discord.com",
+        desc: "Nosso servidor oficial de comunicação por voz e texto.",
+        icon: "fa-discord",
+        pinnedByCeo: true
+      },
+      {
+        id: 3,
+        title: "Twitch",
+        url: "https://www.twitch.tv",
+        desc: "Transmissões ao vivo para ver a galera jogando.",
+        icon: "fa-gamepad",
+        pinnedByCeo: true
+      }
+    ];
+
+    // Lista Inicial de Presença (RSVP)
+    let presenceList = [
+      {
+        id: 1,
+        name: "Carlos Mendes",
+        status: "Sim",
+        comment: "Vou levar os refrigerantes!",
+        timestamp: "Hoje às 14:20",
+        isCeo: false
+      },
+      {
+        id: 2,
+        name: "CEO Tom",
+        status: "Sim",
+        comment: "Presença confirmada como CEO do grupo 🔥",
+        timestamp: "Hoje às 12:00",
+        isCeo: true
+      }
+    ];
+
+    // --- INICIALIZAÇÃO DA PÁGINA ---
+    window.addEventListener('DOMContentLoaded', () => {
+      // Carregar sessão salva do LocalStorage se existir
+      const savedUser = localStorage.getItem('amigos_hub_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+      }
+
+      renderUserHeader();
+      renderAnnouncement();
+      renderSites();
+      renderPresenceList();
+    });
+
+    // --- NOTIFICAÇÃO TOAST ---
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      const toastIcon = document.getElementById('toast-icon');
+
+      toastMsg.innerText = message;
+      if (isError) {
+        toast.classList.remove('border-red-500', 'border-emerald-500');
+        toast.classList.add('border-red-500');
+        toastIcon.className = "fa-solid fa-circle-exclamation text-red-500 text-lg";
+      } else {
+        toast.classList.remove('border-red-500');
+        toast.classList.add('border-emerald-500');
+        toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-lg";
+      }
+
+      toast.classList.remove('translate-x-full');
+      setTimeout(() => {
+        toast.classList.add('translate-x-full');
+      }, 3500);
+    }
+
+    // --- NAVEGAÇÃO DE ABAS ---
+    function switchTab(tabName) {
+      const sitesSec = document.getElementById('section-sites');
+      const presencaSec = document.getElementById('section-presenca');
+      const btnSites = document.getElementById('tab-btn-sites');
+      const btnPresenca = document.getElementById('tab-btn-presenca');
+
+      if (tabName === 'sites') {
+        sitesSec.classList.remove('hidden');
+        presencaSec.classList.add('hidden');
+
+        btnSites.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-red-600 text-white shadow-ceo-glow";
+        btnPresenca.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5";
+      } else {
+        sitesSec.classList.add('hidden');
+        presencaSec.classList.remove('hidden');
+
+        btnPresenca.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-red-600 text-white shadow-ceo-glow";
+        btnSites.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5";
+      }
+    }
+
+    // --- RENDERIZAR CABEÇALHO DO USUÁRIO ---
+    function renderUserHeader() {
+      const container = document.getElementById('user-header-status');
+      const ceoAddBtn = document.getElementById('ceo-add-site-container');
+      const ceoAnnounceBtn = document.getElementById('ceo-announcement-controls');
+
+      if (currentUser.isCeo) {
+        // Exibe Badge de CEO Tom Vermelho
+        container.innerHTML = `
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-red-950/80 border border-red-500/50 text-red-400 text-xs font-extrabold ceo-badge-glow">
+            <i class="fa-solid fa-crown text-red-500"></i>
+            <span>CEO / ADMIN</span>
+            <span class="text-white bg-red-600 px-1.5 py-0.5 rounded text-[10px] ml-1">${currentUser.name}</span>
+          </div>
+          <button onclick="logout()" title="Sair da Conta" class="p-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-white/5 transition-all text-sm">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        `;
+        ceoAddBtn.classList.remove('hidden');
+        ceoAnnounceBtn.classList.remove('hidden');
+      } else if (currentUser.name !== "Visitante") {
+        // Membro Normal
+        container.innerHTML = `
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10 text-slate-200 text-xs font-semibold">
+            <i class="fa-solid fa-user text-slate-400"></i>
+            <span>${currentUser.name}</span>
+          </div>
+          <button onclick="logout()" title="Sair" class="p-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-white/5 transition-all text-sm">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        `;
+        ceoAddBtn.classList.add('hidden');
+        ceoAnnounceBtn.classList.add('hidden');
+      } else {
+        // Visitante Não Logado
+        container.innerHTML = `
+          <button onclick="openLoginModal()" class="px-4 py-2 rounded-xl bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold transition-all flex items-center gap-2 shadow-ceo-glow">
+            <i class="fa-solid fa-right-to-bracket"></i> Fazer Login
+          </button>
+        `;
+        ceoAddBtn.classList.add('hidden');
+        ceoAnnounceBtn.classList.add('hidden');
+      }
+    }
+
+    // --- AUTENTICAÇÃO E LOGIN ---
+    function openLoginModal() {
+      document.getElementById('login-modal').classList.remove('hidden');
+    }
+    function closeLoginModal() {
+      document.getElementById('login-modal').classList.add('hidden');
+    }
+
+    function switchLoginMode(mode) {
+      const btnMember = document.getElementById('btn-mode-member');
+      const btnCeo = document.getElementById('btn-mode-ceo');
+      const formMember = document.getElementById('form-login-member');
+      const formCeo = document.getElementById('form-login-ceo');
+
+      if (mode === 'member') {
+        btnMember.className = "flex-1 py-2 rounded-lg bg-red-600 text-white transition-all";
+        btnCeo.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all";
+        formMember.classList.remove('hidden');
+        formCeo.classList.add('hidden');
+      } else {
+        btnCeo.className = "flex-1 py-2 rounded-lg bg-red-600 text-white transition-all";
+        btnMember.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all";
+        formCeo.classList.remove('hidden');
+        formMember.classList.add('hidden');
+      }
+    }
+
+    function handleMemberLogin(e) {
+      e.preventDefault();
+      const name = document.getElementById('member-name-input').value.trim();
+      if (!name) return;
+
+      currentUser = { name: name, isCeo: false };
+      localStorage.setItem('amigos_hub_user', JSON.stringify(currentUser));
+      
+      renderUserHeader();
+      closeLoginModal();
+      showToast(`Bem-vindo ao portal, ${name}!`);
+
+      // Preenche o formulário de presença automaticamente
+      document.getElementById('presence-name').value = name;
+    }
+
+    function handleCeoLogin(e) {
+      e.preventDefault();
+      const ceoName = document.getElementById('ceo-name-input').value.trim();
+      const password = document.getElementById('ceo-password-input').value;
+
+      if (password === CEO_PASSWORD_SECRET) {
+        currentUser = { name: ceoName || "CEO Tom", isCeo: true };
+        localStorage.setItem('amigos_hub_user', JSON.stringify(currentUser));
+        
+        renderUserHeader();
+        renderSites(); // Re-renderiza para exibir controles de exclusão para o CEO
+        closeLoginModal();
+        showToast("Acesso de CEO/Admin Concedido com Sucesso! 👑");
+
+        // Preenche o formulário de presença automaticamente
+        document.getElementById('presence-name').value = currentUser.name;
+      } else {
+        showToast("Senha do CEO Incorreta! Acesso Negado.", true);
+      }
+    }
+
+    function logout() {
+      currentUser = { name: "Visitante", isCeo: false };
+      localStorage.removeItem('amigos_hub_user');
+      renderUserHeader();
+      renderSites();
+      showToast("Você saiu da sua conta.");
+    }
+
+    // --- GERENCIAMENTO DE SITES (ABA DE SITES) ---
+    function renderSites() {
+      const grid = document.getElementById('sites-grid');
+      grid.innerHTML = '';
+
+      if (sitesList.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-12 text-slate-500 glass-panel rounded-2xl border border-white/5">
+            <i class="fa-regular fa-folder-open text-4xl mb-2"></i>
+            <p>Nenhum site foi fixado ainda.</p>
+          </div>
+        `;
+        return;
+      }
+
+      sitesList.forEach(site => {
+        const card = document.createElement('div');
+        card.className = "glass-panel p-5 rounded-2xl border border-white/10 hover:border-red-500/50 transition-all duration-300 flex flex-col justify-between group shadow-lg";
+
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 group-hover:border-red-500/50 text-red-500 flex items-center justify-center text-xl transition-all">
+                  <i class="fa-solid ${site.icon || 'fa-globe'}"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-base group-hover:text-red-400 transition-all flex items-center gap-2">
+                    ${site.title}
+                    ${site.pinnedByCeo ? '<i class="fa-solid fa-thumbtack text-xs text-red-500" title="Fixado pelo CEO"></i>' : ''}
+                  </h4>
+                  <span class="text-[11px] text-slate-400 font-mono block truncate max-w-[180px]">${site.url}</span>
+                </div>
+              </div>
+
+              <!-- Exclusivo CEO: Remover site -->
+              ${currentUser.isCeo ? `
+                <button onclick="deleteSite(${site.id})" title="Remover Site (Apenas CEO)" class="text-slate-500 hover:text-red-400 transition-colors p-1">
+                  <i class="fa-solid fa-trash-can text-sm"></i>
+                </button>
+              ` : ''}
+            </div>
+
+            <p class="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+              ${site.desc || 'Sem descrição cadastrada.'}
+            </p>
+          </div>
+
+          <div class="pt-4 mt-4 border-t border-white/5 flex items-center gap-2">
+            <a href="${site.url}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
+              Acessar <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+            <button onclick="previewSite('${site.url}', '${site.title}')" title="Abrir Prévia Rápida" class="px-3 py-2 rounded-xl bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-semibold transition-all">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function openAddSiteModal() {
+      if (!currentUser.isCeo) {
+        showToast("Apenas o CEO pode fixar sites novos!", true);
+        return;
+      }
+      document.getElementById('add-site-modal').classList.remove('hidden');
+    }
+    function closeAddSiteModal() {
+      document.getElementById('add-site-modal').classList.add('hidden');
+    }
+
+    function handleAddSiteSubmit(e) {
+      e.preventDefault();
+      if (!currentUser.isCeo) return;
+
+      const title = document.getElementById('site-title-input').value.trim();
+      const url = document.getElementById('site-url-input').value.trim();
+      const desc = document.getElementById('site-desc-input').value.trim();
+      const icon = document.getElementById('site-icon-input').value;
+
+      const newSite = {
+        id: Date.now(),
+        title,
+        url,
+        desc,
+        icon,
+        pinnedByCeo: true
+      };
+
+      sitesList.unshift(newSite);
+      renderSites();
+      closeAddSiteModal();
+      showToast(`Site "${title}" fixado com sucesso pelo CEO! 🔥`);
+
+      // Limpar campos
+      document.getElementById('site-title-input').value = '';
+      document.getElementById('site-url-input').value = '';
+      document.getElementById('site-desc-input').value = '';
+    }
+
+    function deleteSite(id) {
+      if (!currentUser.isCeo) return;
+      sitesList = sitesList.filter(s => s.id !== id);
+      renderSites();
+      showToast("Site removido pelo Administrador.");
+    }
+
+    // --- VISUALIZADOR DE Iframe ---
+    function previewSite(url, title) {
+      const wrapper = document.getElementById('iframe-preview-wrapper');
+      const iframe = document.getElementById('site-iframe');
+      const titleDisplay = document.getElementById('iframe-title');
+      const urlDisplay = document.getElementById('iframe-url-display');
+      const externalLink = document.getElementById('iframe-external-link');
+
+      iframe.src = url;
+      titleDisplay.innerText = title;
+      urlDisplay.innerText = url;
+      externalLink.href = url;
+
+      wrapper.classList.remove('hidden');
+      wrapper.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeIframe() {
+      const wrapper = document.getElementById('iframe-preview-wrapper');
+      const iframe = document.getElementById('site-iframe');
+      iframe.src = '';
+      wrapper.classList.add('hidden');
+    }
+
+    // --- GERENCIAMENTO DE PRESENÇA (RSVP) ---
+    function renderPresenceList() {
+      const listContainer = document.getElementById('presence-list');
+      const countYes = document.getElementById('count-yes');
+      const countNo = document.getElementById('count-no');
+      const countTotal = document.getElementById('count-total');
+
+      listContainer.innerHTML = '';
+
+      let yesTotal = 0;
+      let noTotal = 0;
+
+      presenceList.forEach(item => {
+        if (item.status === 'Sim') yesTotal++;
+        if (item.status === 'Não') noTotal++;
+
+        const card = document.createElement('div');
+        const isYes = item.status === 'Sim';
+
+        card.className = `p-4 rounded-xl border ${isYes ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-red-950/20 border-red-500/30'} flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all`;
+
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-full ${isYes ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'} flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
+              <i class="fa-solid ${isYes ? 'fa-check' : 'fa-xmark'}"></i>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-white text-sm">${item.name}</span>
+                ${item.isCeo ? '<span class="px-2 py-0.5 rounded-full bg-red-600 text-[10px] font-black text-white ceo-badge-glow">CEO</span>' : ''}
+                <span class="text-[10px] text-slate-500">${item.timestamp}</span>
+              </div>
+              ${item.comment ? `<p class="text-xs text-slate-300 italic">"${item.comment}"</p>` : ''}
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+            <span class="px-3 py-1 rounded-full text-xs font-bold ${isYes ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+              ${isYes ? 'CONFIRMADO 🔥' : 'NÃO IRÁ 😢'}
+            </span>
+
+            ${currentUser.isCeo ? `
+              <button onclick="deletePresence(${item.id})" title="Remover da lista (CEO)" class="text-slate-500 hover:text-red-400 transition-colors p-1">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            ` : ''}
+          </div>
+        `;
+
+        listContainer.appendChild(card);
+      });
+
+      countYes.innerText = yesTotal;
+      countNo.innerText = noTotal;
+      countTotal.innerText = presenceList.length;
+    }
+
+    function handlePresenceSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('presence-name').value.trim();
+      const status = document.querySelector('input[name="status"]:checked').value;
+      const comment = document.getElementById('presence-comment').value.trim();
+
+      if (!name) return;
+
+      // Substitui registro anterior com o mesmo nome se existir
+      presenceList = presenceList.filter(p => p.name.toLowerCase() !== name.toLowerCase());
+
+      const now = new Date();
+      const timeStr = `Hoje às ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+      const newEntry = {
+        id: Date.now(),
+        name: name,
+        status: status,
+        comment: comment,
+        timestamp: timeStr,
+        isCeo: currentUser.isCeo
+      };
+
+      presenceList.unshift(newEntry);
+      renderPresenceList();
+
+      showToast(`Presença de "${name}" registrada como ${status.toUpperCase()}!`);
+      document.getElementById('presence-comment').value = '';
+    }
+
+    function deletePresence(id) {
+      if (!currentUser.isCeo) return;
+      presenceList = presenceList.filter(p => p.id !== id);
+      renderPresenceList();
+      showToast("Registro removido pelo CEO.");
+    }
+
+    // --- GERENCIAMENTO DE MURAL DE AVISOS ---
+    function renderAnnouncement() {
+      document.getElementById('hero-welcome-title').innerText = announcementData.title;
+      document.getElementById('hero-announcement-text').innerText = announcementData.body;
+    }
+
+    function openAnnouncementModal() {
+      if (!currentUser.isCeo) return;
+      document.getElementById('announcement-title-input').value = announcementData.title;
+      document.getElementById('announcement-body-input').value = announcementData.body;
+      document.getElementById('announcement-modal').classList.remove('hidden');
+    }
+    function closeAnnouncementModal() {
+      document.getElementById('announcement-modal').classList.add('hidden');
+    }
+
+    function handleAnnouncementSubmit(e) {
+      e.preventDefault();
+      if (!currentUser.isCeo) return;
+
+      announcementData.title = document.getElementById('announcement-title-input').value.trim();
+      announcementData.body = document.getElementById('announcement-body-input').value.trim();
+
+      renderAnnouncement();
+      closeAnnouncementModal();
+      showToast("Mural de avisos atualizado pelo CEO!");
+    }
+
+    // --- UTILITÁRIOS ---
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
 </body>
 </html>
