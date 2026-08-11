@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -160,6 +161,9 @@
       <button onclick="switchTab('sites')" id="tab-btn-sites" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-red-600 text-white shadow-ceo-glow">
         <i class="fa-solid fa-globe"></i> Aba de Sites Fixados
       </button>
+      <button onclick="switchTab('blog')" id="tab-btn-blog" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5">
+        <i class="fa-solid fa-newspaper"></i> Blog do CEO
+      </button>
       <button onclick="switchTab('presenca')" id="tab-btn-presenca" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5">
         <i class="fa-solid fa-clipboard-user"></i> Lista de Presença
       </button>
@@ -212,9 +216,51 @@
       </div>
     </section>
 
-    <!-- SEÇÃO 2: LISTA DE PRESENÇA (RSVP) -->
+    <!-- SEÇÃO 2: BLOG EXCLUSIVO DO CEO -->
+    <section id="section-blog" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-newspaper text-red-500"></i> Blog & Postagens do CEO
+          </h3>
+          <p class="text-xs text-slate-400">Publicações, recomendações e comunicados oficiais do Administrador.</p>
+        </div>
+
+        <!-- Botão Novo Post (Apenas CEO) -->
+        <div id="ceo-add-post-container" class="hidden">
+          <button onclick="openAddPostModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-ceo-glow transition-all">
+            <i class="fa-solid fa-pen-nib"></i> Criar Nova Postagem (CEO)
+          </button>
+        </div>
+      </div>
+
+      <!-- FEED DO BLOG -->
+      <div id="blog-posts-container" class="space-y-6">
+        <!-- Renderizado dinamicamente pelo JS -->
+      </div>
+    </section>
+
+    <!-- SEÇÃO 3: LISTA DE PRESENÇA (RSVP - REINICIA A CADA 24H) -->
     <section id="section-presenca" class="hidden space-y-6">
       
+      <!-- CONTADOR DE 24H E AVISO -->
+      <div class="glass-panel p-4 rounded-2xl border border-red-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-red-950/30 via-slate-900/50 to-slate-900/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-red-600/20 text-red-500 flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-white text-sm">Lista de Presença Diária (24h)</h4>
+            <p class="text-xs text-slate-400">A lista é automaticamente zerada a cada 24 horas para o próximo evento!</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 bg-slate-950/80 px-4 py-2 rounded-xl border border-white/10 font-mono text-xs">
+          <span class="text-slate-400">Reinicia em:</span>
+          <span id="reset-timer" class="font-bold text-red-400 text-sm">24:00:00</span>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <!-- FORMULÁRIO DE CONFIRMAÇÃO (Membros) -->
@@ -223,7 +269,7 @@
             <h3 class="text-lg font-bold text-white flex items-center gap-2">
               <i class="fa-solid fa-pen-nib text-red-500"></i> Marcar Presença
             </h3>
-            <p class="text-xs text-slate-400">Informe se você estará presente no próximo evento ou rolê!</p>
+            <p class="text-xs text-slate-400">Informe se você estará presente no próximo evento!</p>
           </div>
 
           <form id="presence-form" onsubmit="handlePresenceSubmit(event)" class="space-y-4">
@@ -301,7 +347,7 @@
           <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
             <div class="flex items-center justify-between border-b border-white/10 pb-3">
               <h4 class="font-bold text-white text-sm flex items-center gap-2">
-                <i class="fa-solid fa-list-check text-red-500"></i> Lista de Respostas Atualizada
+                <i class="fa-solid fa-list-check text-red-500"></i> Lista de Respostas (24h)
               </h4>
               <span class="text-xs text-slate-400">Ordem em tempo real</span>
             </div>
@@ -446,6 +492,49 @@
     </div>
   </div>
 
+  <!-- MODAL: NOVA POSTAGEM DE BLOG (EXCLUSIVO CEO) -->
+  <div id="add-post-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden">
+    <div class="glass-panel max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl relative space-y-5">
+      <button onclick="closeAddPostModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center text-lg shadow-ceo-glow">
+          <i class="fa-solid fa-pen-nib"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white">Criar Publicação no Blog</h3>
+          <p class="text-xs text-slate-400">Escreva um texto ou recomende um site/assunto para a galera.</p>
+        </div>
+      </div>
+
+      <form onsubmit="handleAddPostSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Título da Postagem</label>
+          <input type="text" id="post-title-input" required placeholder="Ex: Análise do novo jogo ou aviso importante" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Link Relacionado / Site Recomendado (Opcional)</label>
+          <input type="url" id="post-link-input" placeholder="https://exemplo.com" class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Conteúdo da Postagem / Texto</label>
+          <textarea id="post-content-input" rows="5" required placeholder="Escreva detalhadamente a mensagem, resenha ou comunicado..." class="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm resize-none"></textarea>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeAddPostModal()" class="px-4 py-2.5 rounded-xl text-slate-400 hover:text-white text-sm">Cancelar</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-ceo-glow transition-all">
+            Publicar Post
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL: EDITAR ANÚNCIO DO MURAL (EXCLUSIVO CEO) -->
   <div id="announcement-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden">
     <div class="glass-panel max-w-lg w-full p-6 rounded-3xl border border-white/10 shadow-2xl relative space-y-4">
@@ -488,7 +577,7 @@
     // Dados Iniciais do Mural Fixado
     let announcementData = {
       title: "Próximo Encontro da Galera 🚀",
-      body: "Confiram os sites úteis abaixo e não se esqueçam de marcar presença na lista para o evento deste final de semana!"
+      body: "Confiram os sites úteis abaixo, leiam as postagens do CEO e não se esqueçam de marcar presença na lista para o evento deste final de semana!"
     };
 
     // Lista Inicial de Sites Fixados
@@ -519,7 +608,19 @@
       }
     ];
 
-    // Lista Inicial de Presença (RSVP)
+    // Postagens do Blog do CEO
+    let blogPosts = [
+      {
+        id: 1,
+        title: "Bem-vindos ao Blog do CEO!",
+        content: "Este espaço é dedicado para eu compartilhar recomendações de sites, avisos importantes e análises de jogos ou conteúdos legais com todo o nosso grupo.",
+        link: "",
+        date: "11/08/2026",
+        author: "CEO Tom"
+      }
+    ];
+
+    // Lista Inicial de Presença (RSVP) + Timestamp do último reset
     let presenceList = [
       {
         id: 1,
@@ -539,19 +640,87 @@
       }
     ];
 
+    let presenceLastResetTime = Date.now();
+
+    // --- CARREGAR E SALVAR DADOS NO LOCALSTORAGE ---
+    function loadSavedData() {
+      const savedUser = localStorage.getItem('amigos_hub_user');
+      if (savedUser) currentUser = JSON.parse(savedUser);
+
+      const savedSites = localStorage.getItem('amigos_hub_sites');
+      if (savedSites) sitesList = JSON.parse(savedSites);
+
+      const savedPosts = localStorage.getItem('amigos_hub_posts');
+      if (savedPosts) blogPosts = JSON.parse(savedPosts);
+
+      const savedAnnouncement = localStorage.getItem('amigos_hub_announcement');
+      if (savedAnnouncement) announcementData = JSON.parse(savedAnnouncement);
+
+      const savedPresence = localStorage.getItem('amigos_hub_presence');
+      if (savedPresence) presenceList = JSON.parse(savedPresence);
+
+      const savedResetTime = localStorage.getItem('amigos_hub_reset_time');
+      if (savedResetTime) {
+        presenceLastResetTime = parseInt(savedResetTime, 10);
+      } else {
+        localStorage.setItem('amigos_hub_reset_time', presenceLastResetTime.toString());
+      }
+    }
+
+    function saveData(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
     // --- INICIALIZAÇÃO DA PÁGINA ---
     window.addEventListener('DOMContentLoaded', () => {
-      // Carregar sessão salva do LocalStorage se existir
-      const savedUser = localStorage.getItem('amigos_hub_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-      }
+      loadSavedData();
+      checkPresence24hReset();
 
       renderUserHeader();
       renderAnnouncement();
       renderSites();
+      renderBlogPosts();
       renderPresenceList();
+
+      // Inicia o cronômetro do reset de 24h
+      setInterval(updateResetTimerUI, 1000);
     });
+
+    // --- CRONÔMETRO DE 24 HORAS PARA ZERAR A LISTA ---
+    function checkPresence24hReset() {
+      const now = Date.now();
+      const twentyFourHoursMs = 24 * 60 * 60 * 1000;
+
+      // Se passou mais de 24 horas desde o último reset, zera a lista
+      if (now - presenceLastResetTime >= twentyFourHoursMs) {
+        presenceList = [];
+        presenceLastResetTime = now;
+        saveData('amigos_hub_presence', presenceList);
+        localStorage.setItem('amigos_hub_reset_time', presenceLastResetTime.toString());
+        showToast("A lista de presença de 24h foi zerada para o novo dia!");
+      }
+    }
+
+    function updateResetTimerUI() {
+      checkPresence24hReset();
+
+      const now = Date.now();
+      const twentyFourHoursMs = 24 * 60 * 60 * 1000;
+      const targetTime = presenceLastResetTime + twentyFourHoursMs;
+      const diffMs = targetTime - now;
+
+      if (diffMs <= 0) {
+        document.getElementById('reset-timer').innerText = "00:00:00";
+        return;
+      }
+
+      const hours = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+      const timerString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      document.getElementById('reset-timer').innerText = timerString;
+    }
 
     // --- NOTIFICAÇÃO TOAST ---
     function showToast(message, isError = false) {
@@ -579,22 +748,35 @@
     // --- NAVEGAÇÃO DE ABAS ---
     function switchTab(tabName) {
       const sitesSec = document.getElementById('section-sites');
+      const blogSec = document.getElementById('section-blog');
       const presencaSec = document.getElementById('section-presenca');
+
       const btnSites = document.getElementById('tab-btn-sites');
+      const btnBlog = document.getElementById('tab-btn-blog');
       const btnPresenca = document.getElementById('tab-btn-presenca');
+
+      // Oculta todas as seções
+      sitesSec.classList.add('hidden');
+      blogSec.classList.add('hidden');
+      presencaSec.classList.add('hidden');
+
+      // Reseta estilos de botões
+      const inactiveClass = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5";
+      const activeClass = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-red-600 text-white shadow-ceo-glow";
+
+      btnSites.className = inactiveClass;
+      btnBlog.className = inactiveClass;
+      btnPresenca.className = inactiveClass;
 
       if (tabName === 'sites') {
         sitesSec.classList.remove('hidden');
-        presencaSec.classList.add('hidden');
-
-        btnSites.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-red-600 text-white shadow-ceo-glow";
-        btnPresenca.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5";
+        btnSites.className = activeClass;
+      } else if (tabName === 'blog') {
+        blogSec.classList.remove('hidden');
+        btnBlog.className = activeClass;
       } else {
-        sitesSec.classList.add('hidden');
         presencaSec.classList.remove('hidden');
-
-        btnPresenca.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-red-600 text-white shadow-ceo-glow";
-        btnSites.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5";
+        btnPresenca.className = activeClass;
       }
     }
 
@@ -602,6 +784,7 @@
     function renderUserHeader() {
       const container = document.getElementById('user-header-status');
       const ceoAddBtn = document.getElementById('ceo-add-site-container');
+      const ceoAddPostBtn = document.getElementById('ceo-add-post-container');
       const ceoAnnounceBtn = document.getElementById('ceo-announcement-controls');
 
       if (currentUser.isCeo) {
@@ -617,6 +800,7 @@
           </button>
         `;
         ceoAddBtn.classList.remove('hidden');
+        ceoAddPostBtn.classList.remove('hidden');
         ceoAnnounceBtn.classList.remove('hidden');
       } else if (currentUser.name !== "Visitante") {
         // Membro Normal
@@ -630,6 +814,7 @@
           </button>
         `;
         ceoAddBtn.classList.add('hidden');
+        ceoAddPostBtn.classList.add('hidden');
         ceoAnnounceBtn.classList.add('hidden');
       } else {
         // Visitante Não Logado
@@ -639,6 +824,7 @@
           </button>
         `;
         ceoAddBtn.classList.add('hidden');
+        ceoAddPostBtn.classList.add('hidden');
         ceoAnnounceBtn.classList.add('hidden');
       }
     }
@@ -676,7 +862,7 @@
       if (!name) return;
 
       currentUser = { name: name, isCeo: false };
-      localStorage.setItem('amigos_hub_user', JSON.stringify(currentUser));
+      saveData('amigos_hub_user', currentUser);
       
       renderUserHeader();
       closeLoginModal();
@@ -693,10 +879,11 @@
 
       if (password === CEO_PASSWORD_SECRET) {
         currentUser = { name: ceoName || "CEO Tom", isCeo: true };
-        localStorage.setItem('amigos_hub_user', JSON.stringify(currentUser));
+        saveData('amigos_hub_user', currentUser);
         
         renderUserHeader();
-        renderSites(); // Re-renderiza para exibir controles de exclusão para o CEO
+        renderSites();
+        renderBlogPosts();
         closeLoginModal();
         showToast("Acesso de CEO/Admin Concedido com Sucesso! 👑");
 
@@ -712,6 +899,7 @@
       localStorage.removeItem('amigos_hub_user');
       renderUserHeader();
       renderSites();
+      renderBlogPosts();
       showToast("Você saiu da sua conta.");
     }
 
@@ -807,6 +995,8 @@
       };
 
       sitesList.unshift(newSite);
+      saveData('amigos_hub_sites', sitesList);
+
       renderSites();
       closeAddSiteModal();
       showToast(`Site "${title}" fixado com sucesso pelo CEO! 🔥`);
@@ -820,8 +1010,115 @@
     function deleteSite(id) {
       if (!currentUser.isCeo) return;
       sitesList = sitesList.filter(s => s.id !== id);
+      saveData('amigos_hub_sites', sitesList);
       renderSites();
       showToast("Site removido pelo Administrador.");
+    }
+
+    // --- BLOG DO CEO (SISTEMA DE POSTAGENS E TEXTOS) ---
+    function renderBlogPosts() {
+      const container = document.getElementById('blog-posts-container');
+      container.innerHTML = '';
+
+      if (blogPosts.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-slate-500 glass-panel rounded-2xl border border-white/5">
+            <i class="fa-solid fa-newspaper text-4xl mb-2"></i>
+            <p>Nenhuma publicação no blog no momento.</p>
+          </div>
+        `;
+        return;
+      }
+
+      blogPosts.forEach(post => {
+        const article = document.createElement('article');
+        article.className = "glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4 relative group";
+
+        article.innerHTML = `
+          <div class="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold shadow-ceo-glow">
+                <i class="fa-solid fa-crown"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-lg group-hover:text-red-400 transition-colors">${post.title}</h4>
+                <p class="text-xs text-slate-400">Por <span class="text-red-400 font-bold">${post.author || 'CEO'}</span> • ${post.date}</p>
+              </div>
+            </div>
+
+            ${currentUser.isCeo ? `
+              <button onclick="deleteBlogPost(${post.id})" title="Excluir Post (CEO)" class="text-slate-500 hover:text-red-400 transition-colors p-2">
+                <i class="fa-solid fa-trash-can text-base"></i>
+              </button>
+            ` : ''}
+          </div>
+
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed whitespace-pre-line">
+            ${post.content}
+          </p>
+
+          ${post.link ? `
+            <div class="pt-2">
+              <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 font-semibold text-xs transition-all">
+                <i class="fa-solid fa-link"></i> Acesse o Link Recomendado
+              </a>
+            </div>
+          ` : ''}
+        `;
+
+        container.appendChild(article);
+      });
+    }
+
+    function openAddPostModal() {
+      if (!currentUser.isCeo) {
+        showToast("Apenas o CEO pode publicar no blog!", true);
+        return;
+      }
+      document.getElementById('add-post-modal').classList.remove('hidden');
+    }
+    function closeAddPostModal() {
+      document.getElementById('add-post-modal').classList.add('hidden');
+    }
+
+    function handleAddPostSubmit(e) {
+      e.preventDefault();
+      if (!currentUser.isCeo) return;
+
+      const title = document.getElementById('post-title-input').value.trim();
+      const link = document.getElementById('post-link-input').value.trim();
+      const content = document.getElementById('post-content-input').value.trim();
+
+      const dateStr = new Date().toLocaleDateString('pt-BR');
+
+      const newPost = {
+        id: Date.now(),
+        title,
+        link,
+        content,
+        date: dateStr,
+        author: currentUser.name || "CEO"
+      };
+
+      blogPosts.unshift(newPost);
+      saveData('amigos_hub_posts', blogPosts);
+
+      renderBlogPosts();
+      closeAddPostModal();
+      showToast("Nova postagem publicada no blog do CEO! 🔥");
+
+      // Limpar formulário
+      document.getElementById('post-title-input').value = '';
+      document.getElementById('post-link-input').value = '';
+      document.getElementById('post-content-input').value = '';
+    }
+
+    function deleteBlogPost(id) {
+      if (!currentUser.isCeo) return;
+      blogPosts = blogPosts.filter(p => p.id !== id);
+      saveData('amigos_hub_posts', blogPosts);
+      renderBlogPosts();
+      showToast("Postagem removida do blog.");
     }
 
     // --- VISUALIZADOR DE Iframe ---
@@ -860,46 +1157,55 @@
       let yesTotal = 0;
       let noTotal = 0;
 
-      presenceList.forEach(item => {
-        if (item.status === 'Sim') yesTotal++;
-        if (item.status === 'Não') noTotal++;
-
-        const card = document.createElement('div');
-        const isYes = item.status === 'Sim';
-
-        card.className = `p-4 rounded-xl border ${isYes ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-red-950/20 border-red-500/30'} flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all`;
-
-        card.innerHTML = `
-          <div class="flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full ${isYes ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'} flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-              <i class="fa-solid ${isYes ? 'fa-check' : 'fa-xmark'}"></i>
-            </div>
-
-            <div class="space-y-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="font-bold text-white text-sm">${item.name}</span>
-                ${item.isCeo ? '<span class="px-2 py-0.5 rounded-full bg-red-600 text-[10px] font-black text-white ceo-badge-glow">CEO</span>' : ''}
-                <span class="text-[10px] text-slate-500">${item.timestamp}</span>
-              </div>
-              ${item.comment ? `<p class="text-xs text-slate-300 italic">"${item.comment}"</p>` : ''}
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-            <span class="px-3 py-1 rounded-full text-xs font-bold ${isYes ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
-              ${isYes ? 'CONFIRMADO 🔥' : 'NÃO IRÁ 😢'}
-            </span>
-
-            ${currentUser.isCeo ? `
-              <button onclick="deletePresence(${item.id})" title="Remover da lista (CEO)" class="text-slate-500 hover:text-red-400 transition-colors p-1">
-                <i class="fa-solid fa-xmark text-sm"></i>
-              </button>
-            ` : ''}
+      if (presenceList.length === 0) {
+        listContainer.innerHTML = `
+          <div class="text-center py-8 text-slate-500">
+            <i class="fa-regular fa-clock text-3xl mb-1"></i>
+            <p class="text-xs">Lista limpa! Seja o primeiro a marcar presença hoje.</p>
           </div>
         `;
+      } else {
+        presenceList.forEach(item => {
+          if (item.status === 'Sim') yesTotal++;
+          if (item.status === 'Não') noTotal++;
 
-        listContainer.appendChild(card);
-      });
+          const card = document.createElement('div');
+          const isYes = item.status === 'Sim';
+
+          card.className = `p-4 rounded-xl border ${isYes ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-red-950/20 border-red-500/30'} flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all`;
+
+          card.innerHTML = `
+            <div class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-full ${isYes ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'} flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
+                <i class="fa-solid ${isYes ? 'fa-check' : 'fa-xmark'}"></i>
+              </div>
+
+              <div class="space-y-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-bold text-white text-sm">${item.name}</span>
+                  ${item.isCeo ? '<span class="px-2 py-0.5 rounded-full bg-red-600 text-[10px] font-black text-white ceo-badge-glow">CEO</span>' : ''}
+                  <span class="text-[10px] text-slate-500">${item.timestamp}</span>
+                </div>
+                ${item.comment ? `<p class="text-xs text-slate-300 italic">"${item.comment}"</p>` : ''}
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+              <span class="px-3 py-1 rounded-full text-xs font-bold ${isYes ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                ${isYes ? 'CONFIRMADO 🔥' : 'NÃO IRÁ 😢'}
+              </span>
+
+              ${currentUser.isCeo ? `
+                <button onclick="deletePresence(${item.id})" title="Remover da lista (CEO)" class="text-slate-500 hover:text-red-400 transition-colors p-1">
+                  <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+              ` : ''}
+            </div>
+          `;
+
+          listContainer.appendChild(card);
+        });
+      }
 
       countYes.innerText = yesTotal;
       countNo.innerText = noTotal;
@@ -930,6 +1236,8 @@
       };
 
       presenceList.unshift(newEntry);
+      saveData('amigos_hub_presence', presenceList);
+
       renderPresenceList();
 
       showToast(`Presença de "${name}" registrada como ${status.toUpperCase()}!`);
@@ -939,6 +1247,7 @@
     function deletePresence(id) {
       if (!currentUser.isCeo) return;
       presenceList = presenceList.filter(p => p.id !== id);
+      saveData('amigos_hub_presence', presenceList);
       renderPresenceList();
       showToast("Registro removido pelo CEO.");
     }
@@ -965,6 +1274,8 @@
 
       announcementData.title = document.getElementById('announcement-title-input').value.trim();
       announcementData.body = document.getElementById('announcement-body-input').value.trim();
+
+      saveData('amigos_hub_announcement', announcementData);
 
       renderAnnouncement();
       closeAnnouncementModal();
